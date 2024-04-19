@@ -7,12 +7,12 @@ namespace TechLanches.Pagamento.Application.UseCases.Pagamentos
 {
     public class PagamentoUseCase
     {
-        public static async Task Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor, IPagamentoGateway pagamentoGateway)
+        public static async Task<Domain.Aggregates.Pagamento> Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor, IPagamentoGateway pagamentoGateway)
         {
             await VerificarPagamentoExistente(pedidoId, pagamentoGateway);
 
             Domain.Aggregates.Pagamento pagamento = new(pedidoId, valor, formaPagamento);
-            await pagamentoGateway.Cadastrar(pagamento);
+            return await pagamentoGateway.Cadastrar(pagamento);
         }
 
         public static async Task<Domain.Aggregates.Pagamento> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento, IPagamentoGateway pagamentoGateway)

@@ -1,18 +1,67 @@
+using Polly;
+using Polly.Extensions.Http;
+using System.Net.Http.Headers;
+using TechLanches.Pagamento.Adapter.API.Configuration;
+using TechLanches.Pagamento.Adapter.AWS;
+using TechLanches.Pagamento.Application.Options;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Configuration
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true, true)
+    .AddEnvironmentVariables();
+
+//AWS Secrets Manager
+builder.WebHost.ConfigureAppConfiguration(((_, configurationBuilder) =>
+{
+    configurationBuilder.AddAmazonSecretsManager("us-east-1", "lambda-auth-credentials");
+}));
+
+builder.Services.Configure<TechLanchesCognitoSecrets>(builder.Configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Add cognito auth
+builder.Services.AddAuthenticationConfig();
+
+//Setting Swagger
+builder.Services.AddSwaggerConfiguration();
+
+//DI Abstraction
+builder.Services.AddDependencyInjectionConfiguration();
+
+//Setting mapster
+builder.Services.RegisterMaps();
+
+builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("ApiMercadoPago"));
+
+//Criar uma politica de retry (tente 3x, com timeout de 3 segundos)
+var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+                  .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
+
+//Registrar httpclient
+builder.Services.AddHttpClient("MercadoPago", httpClient =>
+{
+    httpClient.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", builder.Configuration.GetSection($"ApiMercadoPago:AccessToken").Value);
+    httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"ApiMercadoPago:BaseUrl").Value);
+}).AddPolicyHandler(retryPolicy);
+
+
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.AddCustomMiddlewares();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseSwaggerConfiguration();
+
+app.UseMapEndpointsConfiguration();
 
 app.UseHttpsRedirection();
 
@@ -21,24 +70,5 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

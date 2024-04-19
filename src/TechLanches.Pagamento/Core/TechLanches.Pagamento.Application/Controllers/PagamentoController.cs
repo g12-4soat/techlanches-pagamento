@@ -40,11 +40,13 @@ namespace TechLanches.Pagamento.Application.Controllers
             return _pagamentoPresenter.ParaDto(pagamento);
         }
 
-        public async Task Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor)
+        public async Task<PagamentoResponseDTO> Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor)
         {
             var pagamentoGateway = new PagamentoGateway(_pagamentoRepository, _mercadoPagoMockadoService, _mercadoPagoService, _applicationOptions, false);
-            await PagamentoUseCase.Cadastrar(pedidoId, formaPagamento, valor, pagamentoGateway);
+            var pagamento = await PagamentoUseCase.Cadastrar(pedidoId, formaPagamento, valor, pagamentoGateway);
             await pagamentoGateway.CommitAsync();
+
+            return _pagamentoPresenter.ParaDto(pagamento);
         }
 
         public async Task<PagamentoResponseACLDTO> ConsultarPagamentoMercadoPago(string pedidoComercial)
@@ -83,6 +85,5 @@ namespace TechLanches.Pagamento.Application.Controllers
 
             return pagamento.StatusPagamento == StatusPagamento.Aprovado;
         }
-
     }
 }
