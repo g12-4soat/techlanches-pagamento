@@ -29,6 +29,11 @@ namespace TechLanches.Pagamento.Application.Gateways
             _mockado = mockado;
         }
 
+        public Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
+        {
+            return _pagamentoRepository.Atualizar(pagamento);
+        }
+
         public Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorPedidoId(int pedidoId)
         {
             return _pagamentoRepository.BuscarPagamentoPorPedidoId(pedidoId);
@@ -61,9 +66,5 @@ namespace TechLanches.Pagamento.Application.Gateways
             return await _mercadoPagoService.GerarPagamentoEQrCode(pedido, _applicationOptions.UserId, _applicationOptions.PosId);
         }
 
-        public async Task CommitAsync()
-        {
-            await _pagamentoRepository.UnitOfWork.CommitAsync();
-        }
     }
 }

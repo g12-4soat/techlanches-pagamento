@@ -14,6 +14,10 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Models
             StatusPagamento = statusPagamento;
             FormaPagamento = formaPagamento;
         }
+        public PagamentoDbModel()
+        {
+            
+        }
 
         [DynamoDBHashKey]
         public string Id { get; set; }

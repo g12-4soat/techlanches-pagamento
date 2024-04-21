@@ -18,15 +18,13 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pedido não encontrado"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-               .RequireAuthorization();
-
+               ;
             app.MapPost("api/pagamentos", CadastrarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
               .WithMetadata(new SwaggerOperationAttribute(summary: "Cria pagamento", description: "Retorna o pagamento"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.Created, description: "Pagamento criado com sucesso"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-              .RequireAuthorization();
-
+              ;
             //app.MapPost("api/pagamentos/webhook/mercadopago", RealizarPagamentoMercadoPago).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
             //   .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento do mercado pago", description: "Retorna o pagamento"))
             //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
@@ -34,13 +32,13 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
             //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
             //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"));
 
-            //app.MapPost("api/pagamentos/webhook/mockado", RealizarPagamentoMercadoPagoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
-            //   .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento mockado", description: "Retorna o pagamento"))
-            //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
-            //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
-            //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
-            //   .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-            //   .RequireAuthorization();
+            app.MapPost("api/pagamentos/webhook/mockado", RealizarPagamentoMercadoPagoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
+               .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento mockado", description: "Retorna o pagamento"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
+               ;
         }
 
         private static async Task<IResult> BuscarStatusPagamentoPorPedidoId([FromRoute] int pedidoId, [FromServices] IPagamentoController pagamentoController)
@@ -55,7 +53,7 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
 
         private static async Task<IResult> CadastrarPagamento([FromBody] PagamentoRequestDTO pagamentoRequestDTO, [FromServices] IPagamentoController pagamentoController)
         {
-            var pagamento = await pagamentoController.Cadastrar(pagamentoRequestDTO.PedidoId, pagamentoRequestDTO.FormaPagamento, pagamentoRequestDTO.Valor);
+            var pagamento = await pagamentoController.Cadastrar(pagamentoRequestDTO.PedidoId, Domain.Enums.FormaPagamento.QrCodeMercadoPago, pagamentoRequestDTO.Valor);
 
             return pagamento is not null
                ? Results.Created($"api/pagamentos/{pagamento.Id}", pagamento)
@@ -82,22 +80,22 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
         //    return Results.Ok();
         //}
 
-        //private static async Task<IResult> RealizarPagamentoMercadoPagoMocado([FromBody] PagamentoMocadoRequestDTO request, [FromServices] IPagamentoController pagamentoController, [FromServices] IPedidoController pedidoController)
-        //{
-        //    var pagamentoExistente = await pagamentoController.ConsultarPagamentoMockado(request.PedidoId.ToString());
+        private static async Task<IResult> RealizarPagamentoMercadoPagoMocado([FromBody] PagamentoMocadoRequestDTO request, [FromServices] IPagamentoController pagamentoController)
+        {
+            var pagamentoExistente = await pagamentoController.ConsultarPagamentoMockado(request.PedidoId.ToString());
 
-        //    var pagamento = await pagamentoController.RealizarPagamento(request.PedidoId, pagamentoExistente.StatusPagamento);
+            var pagamento = await pagamentoController.RealizarPagamento(request.PedidoId, pagamentoExistente.StatusPagamento);
 
-        //    if (pagamento)
-        //    {
-        //        await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoRecebido);
-        //        return Results.Ok();
-        //    }
-        //    else
-        //    {
-        //        await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoCanceladoPorPagamentoRecusado);
-        //        return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
-        //    }
-        //}
+            if (pagamento)
+            {
+                //await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoRecebido);
+                return Results.Ok();
+            }
+            else
+            {
+                //await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoCanceladoPorPagamentoRecusado);
+                return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
+            }
+        }
     }
 }

@@ -24,13 +24,13 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
                     }
                 });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                s.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //s.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 
-                xmlPath = Path.Combine(AppContext.BaseDirectory, "TechLanches.Application.xml");
+                //xmlPath = Path.Combine(AppContext.BaseDirectory, "TechLanches.Pagamento.Application.xml");
 
-                s.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+                //s.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
                 s.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 s.EnableAnnotations();
                 s.UseAllOfToExtendReferenceSchemas();

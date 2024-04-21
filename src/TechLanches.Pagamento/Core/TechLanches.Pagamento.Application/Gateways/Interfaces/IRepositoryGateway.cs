@@ -2,6 +2,5 @@
 {
     public interface IRepositoryGateway
     {
-        Task CommitAsync();
     }
 }

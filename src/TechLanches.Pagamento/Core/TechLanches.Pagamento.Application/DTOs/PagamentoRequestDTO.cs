@@ -15,6 +15,5 @@ namespace TechLanches.Pagamento.Application.DTOs
         /// </summary>
         /// <example>15.50</example>
         public decimal Valor { get; set; }
-        public FormaPagamento FormaPagamento { get; set; } = Domain.Enums.FormaPagamento.QrCodeMercadoPago;
     }
 }

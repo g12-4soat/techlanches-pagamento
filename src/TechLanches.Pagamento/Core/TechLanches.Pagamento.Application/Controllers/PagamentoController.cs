@@ -44,7 +44,6 @@ namespace TechLanches.Pagamento.Application.Controllers
         {
             var pagamentoGateway = new PagamentoGateway(_pagamentoRepository, _mercadoPagoMockadoService, _mercadoPagoService, _applicationOptions, false);
             var pagamento = await PagamentoUseCase.Cadastrar(pedidoId, formaPagamento, valor, pagamentoGateway);
-            await pagamentoGateway.CommitAsync();
 
             return _pagamentoPresenter.ParaDto(pagamento);
         }
@@ -81,7 +80,7 @@ namespace TechLanches.Pagamento.Application.Controllers
         {
             var pagamentoGateway = new PagamentoGateway(_pagamentoRepository, _mercadoPagoMockadoService, _mercadoPagoService, _applicationOptions, false);
             var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);
-            await pagamentoGateway.CommitAsync();
+            await pagamentoGateway.Atualizar(pagamento);
 
             return pagamento.StatusPagamento == StatusPagamento.Aprovado;
         }

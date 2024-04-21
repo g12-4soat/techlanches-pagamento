@@ -38,9 +38,6 @@ namespace TechLanches.Pagamento.Domain.Aggregates
 
             if (Valor <= 0)
                 throw new DomainException("O valor deve ser maior que zero.");
-
-            if (StatusPagamento != StatusPagamento.Aguardando)
-                throw new DomainException("O pagamento deve iniciar como aguardando.");
         }
 
         public void Reprovar()
