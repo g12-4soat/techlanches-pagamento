@@ -1,5 +1,8 @@
-﻿using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
+﻿using Amazon.DynamoDBv2;
+using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
+using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
 using TechLanches.Pagamento.Application.Controllers;
+using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Ports.Services;
 using TechLanches.Pagamento.Application.Ports.Services.Interfaces;
 using TechLanches.Pagamento.Application.Presenters;
@@ -22,7 +25,17 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
             services.AddScoped<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
             services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
-            //services.AddScoped<IPagamentoRepository, PagamentoRepository>();
+            services.AddScoped<IPagamentoRepository, PagamentoRepository>();
+
+
+            services.AddSingleton<IAmazonDynamoDB>(sp =>
+            {
+                var config = new AmazonDynamoDBConfig
+                {
+                    RegionEndpoint = Amazon.RegionEndpoint.USEast1
+                };
+                return new AmazonDynamoDBClient(config);
+            });
         }
     }
 }
