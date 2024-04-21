@@ -16,14 +16,16 @@ namespace TechLanches.Pagamento.Domain.Aggregates
             Validar();
         }
 
-        public Pagamento(int pagamentoId, int pedidoId, decimal valor, StatusPagamento statusPagamento) : base(pagamentoId)
+        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento)
         {
+            Id = id;
             PedidoId = pedidoId;
             Valor = valor;
             StatusPagamento = statusPagamento;
             Validar();
         }
 
+        public string Id { get; private set; }
         public int PedidoId { get; private set; }
         public decimal Valor { get; private set; }
         public StatusPagamento StatusPagamento { get; private set; }
@@ -37,7 +39,7 @@ namespace TechLanches.Pagamento.Domain.Aggregates
             if (Valor <= 0)
                 throw new DomainException("O valor deve ser maior que zero.");
 
-            if (StatusPagamento != StatusPagamento.Aguardando && Id <= 0)
+            if (StatusPagamento != StatusPagamento.Aguardando)
                 throw new DomainException("O pagamento deve iniciar como aguardando.");
         }
 
