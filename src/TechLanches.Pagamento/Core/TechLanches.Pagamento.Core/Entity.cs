@@ -4,15 +4,15 @@
     {
         protected Entity()
         {
-
+            Id = Guid.NewGuid().ToString();
         }
 
-        protected Entity(int id)
+        protected Entity(string id)
         {
             Id = id;
         }
 
-        public int Id { get; private set; }
+        public string Id { get; private set; }
 
         private List<DomainEvent> _domainEvents;
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents?.AsReadOnly();

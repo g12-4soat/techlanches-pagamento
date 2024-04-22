@@ -10,7 +10,7 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
         public static void RegisterMaps(this IServiceCollection services)
         {
             TypeAdapterConfig<Domain.Aggregates.Pagamento, PagamentoResponseDTO>.NewConfig()
-                .Map(dest => dest.Id, src => src.PedidoId)
+                .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.StatusPagamento, src => src.StatusPagamento.ToString());
 
             TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());

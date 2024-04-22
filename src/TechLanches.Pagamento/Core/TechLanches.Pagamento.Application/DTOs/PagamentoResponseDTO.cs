@@ -6,7 +6,7 @@
         /// Id Pedido
         /// </summary>
         /// <example>1</example>
-        public int Id { get; set; }
+        public string Id { get; set; }
         public int PedidoId { get; set; }
 
         /// <summary>

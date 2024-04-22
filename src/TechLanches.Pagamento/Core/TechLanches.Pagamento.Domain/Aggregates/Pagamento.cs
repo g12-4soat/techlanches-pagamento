@@ -16,16 +16,14 @@ namespace TechLanches.Pagamento.Domain.Aggregates
             Validar();
         }
 
-        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento)
+        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento):base(id)
         {
-            Id = id;
             PedidoId = pedidoId;
             Valor = valor;
             StatusPagamento = statusPagamento;
             Validar();
         }
 
-        public string Id { get; private set; }
         public int PedidoId { get; private set; }
         public decimal Valor { get; private set; }
         public StatusPagamento StatusPagamento { get; private set; }
