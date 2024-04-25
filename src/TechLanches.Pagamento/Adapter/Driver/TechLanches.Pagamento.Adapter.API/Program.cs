@@ -3,6 +3,7 @@ using Polly.Extensions.Http;
 using System.Net.Http.Headers;
 using TechLanches.Pagamento.Adapter.API.Configuration;
 using TechLanches.Pagamento.Adapter.AWS;
+using TechLanches.Pagamento.Application.Constantes;
 using TechLanches.Pagamento.Application.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +52,10 @@ builder.Services.AddHttpClient("MercadoPago", httpClient =>
     httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"ApiMercadoPago:BaseUrl").Value);
 }).AddPolicyHandler(retryPolicy);
 
-
+builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
+{
+    httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
+}).AddPolicyHandler(retryPolicy);
 
 var app = builder.Build();
 

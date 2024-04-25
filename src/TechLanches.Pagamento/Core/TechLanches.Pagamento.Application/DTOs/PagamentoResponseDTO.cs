@@ -16,7 +16,13 @@
         public decimal Valor { get; set; }
 
         /// <summary>
-        /// Valor Pagamento
+        /// Código de pagamento
+        /// </summary>
+        /// <example>qrcodedata</example>
+        public string QRCodeData { get; set; }
+
+        /// <summary>
+        /// Status Pagamento
         /// </summary>
         /// <example>Aprovado</example>
         public string StatusPagamento { get; set; }

@@ -11,22 +11,16 @@ namespace TechLanches.Pagamento.Application.Gateways
     {
         private readonly IPagamentoRepository _pagamentoRepository;
         private readonly IMercadoPagoMockadoService _mercadoPagoMockadoService;
-        private readonly IMercadoPagoService _mercadoPagoService;
         private readonly ApplicationOptions _applicationOptions;
-        private readonly bool _mockado;
 
         public PagamentoGateway(
             IPagamentoRepository pagamentoRepository,
             IMercadoPagoMockadoService mercadoPagoMockadoService,
-            IMercadoPagoService mercadoPagoService,
-            ApplicationOptions applicationOptions,
-            bool mockado)
+            ApplicationOptions applicationOptions)
         {
             _pagamentoRepository = pagamentoRepository;
             _mercadoPagoMockadoService = mercadoPagoMockadoService;
-            _mercadoPagoService = mercadoPagoService;
             _applicationOptions = applicationOptions;
-            _mockado = mockado;
         }
 
         public Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
@@ -44,27 +38,14 @@ namespace TechLanches.Pagamento.Application.Gateways
             return _pagamentoRepository.Cadastrar(pagamento);
         }
 
-        public async Task<PagamentoResponseACLDTO> ConsultarPagamentoMercadoPago(string pedidoComercial)
+        public async Task<PagamentoResponseACLDTO> ConsultarPagamento(string pedidoComercial)
         {
-            if (_mockado)
-            {
-                return await _mercadoPagoMockadoService.ConsultarPagamento(pedidoComercial);
-            }
-
-            return await _mercadoPagoService.ConsultarPagamento(pedidoComercial);
+            return await _mercadoPagoMockadoService.ConsultarPagamento(pedidoComercial);
         }
 
-        public async Task<string> GerarPagamentoEQrCodeMercadoPago(PedidoACLDTO pedidoMercadoPago)
+        public async Task<string> GerarPagamentoEQrCode()
         {
-            var pedido = JsonSerializer.Serialize(pedidoMercadoPago);
-
-            if (_mockado)
-            {
-                return await _mercadoPagoMockadoService.GerarPagamentoEQrCode(pedido, _applicationOptions.UserId, _applicationOptions.PosId);
-            }
-
-            return await _mercadoPagoService.GerarPagamentoEQrCode(pedido, _applicationOptions.UserId, _applicationOptions.PosId);
+            return await _mercadoPagoMockadoService.GerarPagamentoEQrCode();
         }
-
     }
 }

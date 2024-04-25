@@ -20,10 +20,10 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
             services.AddSingleton<IPagamentoPresenter, PagamentoPresenter>();
 
             services.AddScoped<IPagamentoController, PagamentoController>();
+            services.AddScoped<IPedidoController, PedidoController>();
 
             services.AddScoped<IQrCodeGeneratorService, QrCodeGeneratorService>();
             services.AddScoped<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
-            services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
             services.AddScoped<IPagamentoRepository, PagamentoRepository>();
 

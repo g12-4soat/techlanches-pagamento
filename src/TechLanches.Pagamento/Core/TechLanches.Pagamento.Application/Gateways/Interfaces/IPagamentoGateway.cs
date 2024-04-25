@@ -7,7 +7,7 @@ namespace TechLanches.Pagamento.Application.Gateways.Interfaces
         Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorPedidoId(int pedidoId);
         Task<Domain.Aggregates.Pagamento> Cadastrar(Domain.Aggregates.Pagamento pagamento);
         Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento);
-        Task<string> GerarPagamentoEQrCodeMercadoPago(PedidoACLDTO pedidoMercadoPago);
-        Task<PagamentoResponseACLDTO> ConsultarPagamentoMercadoPago(string pedidoComercial);
+        Task<string> GerarPagamentoEQrCode();
+        Task<PagamentoResponseACLDTO> ConsultarPagamento(string pedidoComercial);
     }
 }

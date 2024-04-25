@@ -9,9 +9,6 @@ namespace TechLanches.Pagamento.Application.Controllers
         Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento);
         Task<PagamentoResponseDTO> BuscarPagamentoPorPedidoId(int pedidoId);
         Task<PagamentoResponseDTO> Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor);
-        Task<string> GerarPagamentoEQrCodeMercadoPago(PedidoACLDTO pedidoMercadoPago);
-        Task<PagamentoResponseACLDTO> ConsultarPagamentoMercadoPago(string pedidoComercial);
         Task<PagamentoResponseACLDTO> ConsultarPagamentoMockado(string pedidoComercial);
-        Task<string> GerarPagamentoEQrCodeMockado(PedidoACLDTO pedidoMercadoPago);
     }
 }
