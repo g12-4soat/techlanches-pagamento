@@ -57,6 +57,8 @@ builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
     httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
 }).AddPolicyHandler(retryPolicy);
 
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 app.AddCustomMiddlewares();
