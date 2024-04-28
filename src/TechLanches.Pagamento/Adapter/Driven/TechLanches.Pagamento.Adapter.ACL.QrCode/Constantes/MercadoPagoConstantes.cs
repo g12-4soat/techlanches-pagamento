@@ -4,6 +4,6 @@
     {
         public const string MERCADO_PAGO = "MercadoPago";
         public const string STATUS_APROVADO = "approved";
-        public const string STATUS_REPROVADO = "repproved";
+        public const string STATUS_REPROVADO = "disapproved";
     }
 }
