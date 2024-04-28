@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0c61fe92-ff83-4340-91fe-71c7b76ee699</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\TechLanches.Pagamento.Application\TechLanches.Pagamento.Application.csproj" />
+    <ProjectReference Include="..\..\..\Core\TechLanches.Pagamento.Domain\TechLanches.Pagamento.Domain.csproj" />
+    <ProjectReference Include="..\..\Driven\TechLanches.Pagamento.Adapter.AWS\TechLanches.Pagamento.Adapter.AWS.csproj" />
+    <ProjectReference Include="..\..\Driven\TechLanches.Pagamento.Adapter.DynamoDB\TechLanches.Pagamento.Adapter.DynamoDB.csproj" />
+  </ItemGroup>
+
+</Project>

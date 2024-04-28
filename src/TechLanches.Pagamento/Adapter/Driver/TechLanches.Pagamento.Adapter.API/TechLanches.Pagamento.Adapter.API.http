@@ -1,0 +1,6 @@
+@TechLanches.Pagamento.Adapter.API_HostAddress = http://localhost:5210
+
+GET {{TechLanches.Pagamento.Adapter.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
