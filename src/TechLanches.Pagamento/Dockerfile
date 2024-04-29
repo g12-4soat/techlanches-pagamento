@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.AWS/TechLanches.Pagamento.Adapter.AWS.csproj", "TechLanches.Pagamento.Adapter.AWS/"]
 COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.ACL.QrCode/TechLanches.Pagamento.Adapter.ACL.QrCode.csproj", "TechLanches.Pagamento.Adapter.ACL.QrCode/"]
