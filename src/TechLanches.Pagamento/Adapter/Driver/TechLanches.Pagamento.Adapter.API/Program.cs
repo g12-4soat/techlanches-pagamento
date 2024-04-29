@@ -45,12 +45,6 @@ var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                   .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
 //Registrar httpclient
-builder.Services.AddHttpClient("MercadoPago", httpClient =>
-{
-    httpClient.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", builder.Configuration.GetSection($"ApiMercadoPago:AccessToken").Value);
-    httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"ApiMercadoPago:BaseUrl").Value);
-}).AddPolicyHandler(retryPolicy);
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {

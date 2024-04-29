@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.AWS/TechLanches.Adapter.AWS.csproj", "TechLanches.Pagamento.Adapter.AWS/"]
+COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.AWS/TechLanches.Pagamento.Adapter.AWS.csproj", "TechLanches.Pagamento.Adapter.AWS/"]
 COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.ACL.QrCode/TechLanches.Pagamento.Adapter.ACL.QrCode.csproj", "TechLanches.Pagamento.Adapter.ACL.QrCode/"]
 COPY ["Adapter/Driver/TechLanches.Pagamento.Adapter.API/TechLanches.Pagamento.Adapter.API.csproj", "TechLanches.Pagamento.Adapter.API/"]
 COPY ["Adapter/Driven/TechLanches.Pagamento.Adapter.DynamoDB/TechLanches.Pagamento.Adapter.DynamoDB.csproj", "TechLanches.Pagamento.Adapter.DynamoDB/"]
