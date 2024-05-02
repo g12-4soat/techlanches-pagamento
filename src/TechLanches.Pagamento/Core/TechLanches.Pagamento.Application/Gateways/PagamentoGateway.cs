@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
+﻿using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Application.Gateways.Interfaces;
-using TechLanches.Pagamento.Application.Options;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 
 namespace TechLanches.Pagamento.Application.Gateways
@@ -11,16 +9,14 @@ namespace TechLanches.Pagamento.Application.Gateways
     {
         private readonly IPagamentoRepository _pagamentoRepository;
         private readonly IMercadoPagoMockadoService _mercadoPagoMockadoService;
-        private readonly ApplicationOptions _applicationOptions;
 
         public PagamentoGateway(
             IPagamentoRepository pagamentoRepository,
-            IMercadoPagoMockadoService mercadoPagoMockadoService,
-            ApplicationOptions applicationOptions)
+            IMercadoPagoMockadoService mercadoPagoMockadoService
+            )
         {
             _pagamentoRepository = pagamentoRepository;
             _mercadoPagoMockadoService = mercadoPagoMockadoService;
-            _applicationOptions = applicationOptions;
         }
 
         public Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)

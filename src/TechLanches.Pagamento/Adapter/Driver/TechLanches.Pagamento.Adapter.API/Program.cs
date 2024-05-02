@@ -1,10 +1,8 @@
 using Polly;
 using Polly.Extensions.Http;
-using System.Net.Http.Headers;
 using TechLanches.Pagamento.Adapter.API.Configuration;
 using TechLanches.Pagamento.Adapter.AWS;
 using TechLanches.Pagamento.Application.Constantes;
-using TechLanches.Pagamento.Application.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +36,6 @@ builder.Services.AddDependencyInjectionConfiguration();
 //Setting mapster
 builder.Services.RegisterMaps();
 
-builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("ApiMercadoPago"));
 
 //Criar uma politica de retry (tente 3x, com timeout de 3 segundos)
 var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
