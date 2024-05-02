@@ -8,6 +8,7 @@ using TechLanches.Pagamento.Application.DTOs;
 using TechLanches.Pagamento.Application.Gateways;
 using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Domain.Enums.Pedido;
+using TechLanches.Pagamento.UnitTests.FakeHttpHandler;
 
 namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
 {
@@ -21,7 +22,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
         {
             var httpClientFactory = Substitute.For<IHttpClientFactory>();
             var pedidoResponseJsonMock = JsonSerializer.Serialize(new PedidoResponseDTO { Id = 1 });
-            var handler = new FakeHttpMessageHandler(pedidoResponseJsonMock);
+            var handler = new FakeHttpMessageHandler(pedidoResponseJsonMock, System.Net.HttpStatusCode.OK);
             _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri("https://example.com/") 
@@ -48,18 +49,5 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
             Assert.Equal(pedidoResponseDto.Id, result.Id);
         }
     }
-    public class FakeHttpMessageHandler : HttpMessageHandler
-    {
-        private readonly string _mockResponse;
-        public FakeHttpMessageHandler(string mockJsonResponse)
-        {
-            _mockResponse = mockJsonResponse;
-        }
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
-        {
-            var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-            response.Content = new StringContent(_mockResponse, Encoding.UTF8, "application/json"); ;
-            return Task.FromResult(response);
-        }
-    }
+    
 }
