@@ -93,7 +93,6 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
             // Arrange
             var pedidoId = 1;
             var valor = 100;
-            var qrCodeData = "QRCodeData";
             var formaPagamento = FormaPagamento.QrCodeMercadoPago;
             var statusPagamento = StatusPagamentoEnum.Aprovado;
 
