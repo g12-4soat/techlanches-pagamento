@@ -34,8 +34,7 @@ namespace TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago
             return statusStr.ToLower() switch
             {
                 MercadoPagoConstantes.STATUS_APROVADO => StatusPagamentoEnum.Aprovado,
-                MercadoPagoConstantes.STATUS_REPROVADO => StatusPagamentoEnum.Reprovado,
-                _ => throw new ArgumentException("String de status pagamento inválida"),
+                MercadoPagoConstantes.STATUS_REPROVADO => StatusPagamentoEnum.Reprovado
             };
         }
     }

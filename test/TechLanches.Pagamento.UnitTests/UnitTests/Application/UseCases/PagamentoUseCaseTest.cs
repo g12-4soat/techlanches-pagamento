@@ -90,7 +90,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.UseCases
         }
 
         [Fact]
-        public async Task RealizarPagamento_DeveLancarExcecaoQuandoPagamentoNaoExistente()
+        public async Task RealizarPagamento_DeveLancarExcecaoQuandoPagamentoNaoExiste()
         {
             // Arrange
             var pedidoId = 1;
