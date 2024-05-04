@@ -10,14 +10,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
+    <PackageReference Include="ReportGenerator.Core" Version="5.2.5" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TechLanches.Pagamento\Adapter\Driven\TechLanches.Pagamento.Adapter.AWS\TechLanches.Pagamento.Adapter.AWS.csproj" />
+    <ProjectReference Include="..\..\src\TechLanches.Pagamento\Adapter\Driven\TechLanches.Pagamento.Adapter.DynamoDB\TechLanches.Pagamento.Adapter.DynamoDB.csproj" />
+    <ProjectReference Include="..\..\src\TechLanches.Pagamento\Core\TechLanches.Pagamento.Application\TechLanches.Pagamento.Application.csproj" />
+    <ProjectReference Include="..\..\src\TechLanches.Pagamento\Core\TechLanches.Pagamento.Domain\TechLanches.Pagamento.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UnitTests\Adapter\API\Endpoints\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,148 @@
+name: Pipeline techlanches-pagamento
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+  
+jobs:
+##############################################################
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.x
+
+      - name: Restore NuGet packages
+        run: dotnet restore **/**/*.csproj
+
+      - name: Build
+        run: dotnet build **/**/*.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test test/**/*.csproj --no-restore --verbosity normal
+
+#############################################################
+  build-sonar:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v3
+        with:
+          path: ./.sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+          
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ./.sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+
+      - name: Install Coverlet
+        run: dotnet tool install --global coverlet.console
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: | 
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-pagamento" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=test/TechLanches.Pagamento.UnitTests/coverage.opencover.xml
+          dotnet build src/TechLanches.Pagamento/TechLanches.Pagamento.sln --configuration Release
+          dotnet test test/**/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Get current analysisId
+        id: get-analysis-id
+        run: |
+          ANALYSIS_ID=$(curl -s "https://sonarcloud.io/api/ce/component?component=g12-4soat_techlanches-pagamento" | jq -r '.current.analysisId')
+          echo "::set-output name=analysis-id::$ANALYSIS_ID"
+
+      - name: Check SonarCloud Quality Gate status
+        id: sonarcloud-quality-gate-check
+        run: |
+          ANALYSIS_ID=${{ steps.get-analysis-id.outputs.analysis-id }}
+          STATUS=$(curl -s "https://sonarcloud.io/api/qualitygates/project_status?analysisId=$ANALYSIS_ID" | jq -r '.projectStatus.status')
+          if [ "$STATUS" != "OK" ]; then
+            echo "SonarCloud Quality Gate check failed. Aborting workflow."
+            exit 1
+          fi
+
+###############################################################
+  publish-image-dh:
+    needs: build-sonar
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker login
+        env:
+          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+      - name: Build and Push Pagamento.API Image
+        working-directory: src/TechLanches.Pagamento
+        run: |
+          TAG=$(date +%Y%m%d%H%M%S)
+          docker build -f Dockerfile -t ${{secrets.DOCKER_USERNAME}}/techlanches-pagamento:latest -t ${{secrets.DOCKER_USERNAME}}/techlanches-pagamento:$TAG . --no-cache
+          docker push ${{secrets.DOCKER_USERNAME}}/techlanches-pagamento:$TAG
+          docker push ${{secrets.DOCKER_USERNAME}}/techlanches-pagamento:latest      
+
+##############################################################
+
+  deploy-prod:   
+  
+    needs: [
+      publish-image-dh
+    ]
+  
+    if: github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main'
+    environment:
+      name: prod
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy AWS
+        env:
+          TOKEN: ${{ secrets.GTH_TOKEN  }}
+        run: |
+          curl -L \
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token $TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/g12-4soat/techlanches-iac/actions/workflows/deployments.yml/dispatches \
+          -d '{"ref":"main"}'

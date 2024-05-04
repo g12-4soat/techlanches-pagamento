@@ -3,8 +3,6 @@ using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.Ports.Repositories;
-using TechLanches.Pagamento.Application.Ports.Services;
-using TechLanches.Pagamento.Application.Ports.Services.Interfaces;
 using TechLanches.Pagamento.Application.Presenters;
 using TechLanches.Pagamento.Application.Presenters.Interfaces;
 
@@ -22,7 +20,6 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
             services.AddScoped<IPagamentoController, PagamentoController>();
             services.AddScoped<IPedidoController, PedidoController>();
 
-            services.AddScoped<IQrCodeGeneratorService, QrCodeGeneratorService>();
             services.AddScoped<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
 
             services.AddScoped<IPagamentoRepository, PagamentoRepository>();

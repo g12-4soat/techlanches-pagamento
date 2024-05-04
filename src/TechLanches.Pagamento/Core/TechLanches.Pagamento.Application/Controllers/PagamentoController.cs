@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Options;
-using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
+﻿using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Application.DTOs;
 using TechLanches.Pagamento.Application.Gateways;
 using TechLanches.Pagamento.Application.Gateways.Interfaces;
-using TechLanches.Pagamento.Application.Options;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Presenters.Interfaces;
 using TechLanches.Pagamento.Application.UseCases.Pagamentos;
@@ -17,19 +15,16 @@ namespace TechLanches.Pagamento.Application.Controllers
         private readonly IPagamentoPresenter _pagamentoPresenter;
         private readonly IPagamentoRepository _pagamentoRepository;
         private readonly IMercadoPagoMockadoService _mercadoPagoMockadoService;
-        private readonly ApplicationOptions _applicationOptions;
         private readonly IPagamentoGateway pagamentoGateway;
         public PagamentoController(
             IPagamentoRepository pagamentoRepository,
             IPagamentoPresenter pagamentoPresenter,
-            IMercadoPagoMockadoService mercadoPagoMockadoService,
-            IOptions<ApplicationOptions> applicationOptions)
+            IMercadoPagoMockadoService mercadoPagoMockadoService)
         {
             _pagamentoRepository = pagamentoRepository;
             _pagamentoPresenter = pagamentoPresenter;
             _mercadoPagoMockadoService = mercadoPagoMockadoService;
-            _applicationOptions = applicationOptions.Value;
-            pagamentoGateway = new PagamentoGateway(_pagamentoRepository, _mercadoPagoMockadoService, _applicationOptions);
+            pagamentoGateway = new PagamentoGateway(_pagamentoRepository, _mercadoPagoMockadoService);
         }
 
         public async Task<PagamentoResponseDTO> BuscarPagamentoPorPedidoId(int pedidoId)

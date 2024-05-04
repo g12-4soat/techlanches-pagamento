@@ -15,6 +15,7 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
         {
             _context = new DynamoDBContext(dynamoDbClient);
         }
+        
         public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
         {
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
