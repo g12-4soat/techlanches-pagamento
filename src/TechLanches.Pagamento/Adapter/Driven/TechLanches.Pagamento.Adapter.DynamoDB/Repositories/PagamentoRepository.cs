@@ -2,20 +2,24 @@
 using Amazon.DynamoDBv2.DataModel;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
 using TechLanches.Pagamento.Application.Ports.Repositories;
-using TechLanches.Pagamento.Domain.Aggregates;
 using TechLanches.Pagamento.Domain.Enums;
 
 namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 {
     public class PagamentoRepository : IPagamentoRepository
     {
-        private readonly DynamoDBContext _context;
+        private readonly IDynamoDBContext _context;
 
         public PagamentoRepository(IAmazonDynamoDB dynamoDbClient)
         {
             _context = new DynamoDBContext(dynamoDbClient);
         }
-        
+
+        public PagamentoRepository(IDynamoDBContext context)
+        {
+            _context = context;
+        }
+
         public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
         {
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
@@ -39,11 +43,11 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
         public async Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorPedidoId(int pedidoId)
         {
-            var query = _context.QueryAsync<PagamentoDbModel>(pedidoId, new DynamoDBOperationConfig
+            AsyncSearch<PagamentoDbModel> query = _context.QueryAsync<PagamentoDbModel>(pedidoId, new DynamoDBOperationConfig
             {
                 IndexName = "pedidoIdIndex"
             });
-            var pagamentoDynamoModel = (await query.GetNextSetAsync()).FirstOrDefault();
+            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).FirstOrDefault();
 
             if (pagamentoDynamoModel is null)
                 return null;
