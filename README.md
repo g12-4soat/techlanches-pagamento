@@ -19,7 +19,7 @@ Este projeto faz parte do curso de pós-graduação em Arquitetura de Software o
 </p>
 
 <details>
-  <summary>Como executar o terraform local?</summary>
+  <summary>Como executar o projeto?</summary>
   
 ## Executando o Projeto
 O procedimento para executar o projeto é simples e leva poucos passos: 
