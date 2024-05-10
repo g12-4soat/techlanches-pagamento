@@ -47,7 +47,7 @@ var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
-    //httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
+    httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
 }).AddPolicyHandler(retryPolicy);
 
 builder.Services.AddMemoryCache();
