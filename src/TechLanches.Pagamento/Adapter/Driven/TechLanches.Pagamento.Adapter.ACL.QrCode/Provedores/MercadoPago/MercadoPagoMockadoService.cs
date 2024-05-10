@@ -25,7 +25,7 @@ namespace TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago
         private string ObterStatusPagamentoSimulado()
         {
             Random random = new Random();
-            string[] statuses = { MercadoPagoConstantes.STATUS_APROVADO, MercadoPagoConstantes.STATUS_REPROVADO };
+            string[] statuses = { MercadoPagoConstantes.STATUS_APROVADO };
             return statuses[random.Next(statuses.Length)];
         }
 
