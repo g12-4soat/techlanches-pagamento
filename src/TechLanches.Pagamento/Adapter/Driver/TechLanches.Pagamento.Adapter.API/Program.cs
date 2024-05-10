@@ -36,6 +36,8 @@ builder.Services.AddDependencyInjectionConfiguration();
 //Setting mapster
 builder.Services.RegisterMaps();
 
+builder.Services.AddHealthChecks();
+
 
 //Criar uma politica de retry (tente 3x, com timeout de 3 segundos)
 var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
@@ -45,21 +47,21 @@ var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
-    httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
+    //httpClient.BaseAddress = new Uri(builder.Configuration.GetSection($"TechLanchesPedido:BaseUrl").Value);
 }).AddPolicyHandler(retryPolicy);
 
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
+app.UseRouting();
 app.AddCustomMiddlewares();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwaggerConfiguration();
-
+app.AddHealthCheckEndpoint();
 app.UseMapEndpointsConfiguration();
-
 app.UseHttpsRedirection();
 
 app.Run();
