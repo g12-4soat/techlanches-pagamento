@@ -1,0 +1,623 @@
+{
+	"info": {
+		"_postman_id": "4ffbaa33-3ceb-4470-a1bb-01353a175d1c",
+		"name": "Tech Lanches Fase 4 Pagamentos",
+		"description": "Tech Lanches API Swagger\n\nContact Support:\n Name: Tech Lanches\n Email: g12.4soat.fiap@outlook.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "11389340"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "pagamentos",
+					"item": [
+						{
+							"name": "status",
+							"item": [
+								{
+									"name": "{pedidoId}",
+									"item": [
+										{
+											"name": "Buscar status pagamento",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": {
+														"token": "{{acessToken}}"
+													}
+												},
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrlPagamento}}/api/pagamentos/status/:pedidoId",
+													"host": [
+														"{{baseUrlPagamento}}"
+													],
+													"path": [
+														"api",
+														"pagamentos",
+														"status",
+														":pedidoId"
+													],
+													"variable": [
+														{
+															"key": "pedidoId",
+															"value": ""
+														}
+													]
+												},
+												"description": "Retorna o status do pagamento"
+											},
+											"response": [
+												{
+													"name": "Status do pagamento encontrado com sucesso",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/status/:pedidoId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"status",
+																":pedidoId"
+															],
+															"variable": [
+																{
+																	"key": "pedidoId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"id\": \"<integer>\",\n  \"valor\": \"<double>\",\n  \"statusPagamento\": \"<string>\"\n}"
+												},
+												{
+													"name": "Requisição inválida",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/status/:pedidoId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"status",
+																":pedidoId"
+															],
+															"variable": [
+																{
+																	"key": "pedidoId"
+																}
+															]
+														}
+													},
+													"status": "Bad Request",
+													"code": 400,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												},
+												{
+													"name": "Pedido não encontrado",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/status/:pedidoId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"status",
+																":pedidoId"
+															],
+															"variable": [
+																{
+																	"key": "pedidoId"
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												},
+												{
+													"name": "Erro no servidor interno",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/status/:pedidoId",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"status",
+																":pedidoId"
+															],
+															"variable": [
+																{
+																	"key": "pedidoId"
+																}
+															]
+														}
+													},
+													"status": "Internal Server Error",
+													"code": 500,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "webhook",
+							"item": [
+								{
+									"name": "mockado",
+									"item": [
+										{
+											"name": "Webhook pagamento mockado",
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": {
+														"token": "{{acessToken}}"
+													}
+												},
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"pedidoId\": 1\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": "{{baseUrlPagamento}}}}/api/pagamentos/webhook/mockado",
+												"description": "Retorna o pagamento"
+											},
+											"response": [
+												{
+													"name": "Pagamento encontrado com sucesso",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/webhook/mockado?pedidoId=<integer>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"webhook",
+																"mockado"
+															],
+															"query": [
+																{
+																	"key": "pedidoId",
+																	"value": "<integer>",
+																	"description": "(Required) "
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												},
+												{
+													"name": "Requisição inválida",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/webhook/mockado?pedidoId=<integer>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"webhook",
+																"mockado"
+															],
+															"query": [
+																{
+																	"key": "pedidoId",
+																	"value": "<integer>",
+																	"description": "(Required) "
+																}
+															]
+														}
+													},
+													"status": "Bad Request",
+													"code": 400,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												},
+												{
+													"name": "Pagamento não encontrado",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/webhook/mockado?pedidoId=<integer>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"webhook",
+																"mockado"
+															],
+															"query": [
+																{
+																	"key": "pedidoId",
+																	"value": "<integer>",
+																	"description": "(Required) "
+																}
+															]
+														}
+													},
+													"status": "Not Found",
+													"code": 404,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												},
+												{
+													"name": "Erro no servidor interno",
+													"originalRequest": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "{{baseUrl}}/api/pagamentos/webhook/mockado?pedidoId=<integer>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"api",
+																"pagamentos",
+																"webhook",
+																"mockado"
+															],
+															"query": [
+																{
+																	"key": "pedidoId",
+																	"value": "<integer>",
+																	"description": "(Required) "
+																}
+															]
+														}
+													},
+													"status": "Internal Server Error",
+													"code": 500,
+													"_postman_previewlanguage": "json",
+													"header": [
+														{
+															"key": "Content-Type",
+															"value": "application/json"
+														}
+													],
+													"cookie": [],
+													"body": "{\n  \"statusCode\": 302,\n  \"mensagemErro\": \"<string>\"\n}"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Cadastrar pagamento",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJraWQiOiJ4YkpERk1NXC9VOUVKeTErdHRkOFZUTjhxZDMydWtFRjkzV3lKcmpJbVwvQ0U9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJkNDE4MjQyOC04MGIxLTcwMzctNTViNy0zMThlZWJmNGEyMDgiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV8zOGVhN1Z2WlMiLCJjbGllbnRfaWQiOiIxaTZjY2U2MDBuNHZzaGUycnA4ZWpodXRqcSIsIm9yaWdpbl9qdGkiOiI3MTFlMzcxZC0zYmZlLTQ5ODItYmNhMS01NmNmOTVkZDRiOTYiLCJldmVudF9pZCI6ImY1MjU1OTBmLTFhOTEtNDkxOS1hNjg3LThmZWYzZjE1MDhhOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3MTUxMzIwNTAsImV4cCI6MTcxNTEzNTY1MCwiaWF0IjoxNzE1MTMyMDUwLCJqdGkiOiIwNGM0OGVkNi1lOWNmLTRiOWMtODg3MC1mYTMwNWNmYmNhNDAiLCJ1c2VybmFtZSI6InRlY2hsYW5jaGVzIn0.L6W4q2HSkDLnCrHJtoA9QkeyoVX0YFLF4VE0JEMU_qF6jjzBQD4VcUKM9anMKcWXVkWiVLr090Mv_SVT_zIzr5Pf1QkpgSGghCH8w3ra2wGRV9SAyoaoy1vJK7sd-ZHRrTuKD-IMeL0S1YrIjxv9H_o7LbVF9ICg3PUF-To95qEFkzRlLVW8amYxsBLay2eSdf-FGx5Mcrsle9mfz6bm976_hTF4fQbCXlt6STrbxSVp0todN8jb49Pu8Fg9L1KPhWGg49El3rTFXTTlQi8hXZp5LSU-5joamD0HBgFNpRZoxVyVVXUdpa_QujBobnBIUszoJispUuc2RWyOaNXmkw"
+									}
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"pedidoId\": 1,\n  \"valor\": 10\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseUrlPagamento}}/api/pagamentos",
+								"description": "Efetua o cadastramento do cliente"
+							},
+							"response": [
+								{
+									"name": "Cliente cadastrado com sucesso",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nome\": \"<string>\",\n  \"email\": \"<string>\",\n  \"cpf\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{baseUrl}}/api/clientes"
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"<integer>\",\n  \"nome\": \"<string>\",\n  \"email\": \"<string>\",\n  \"cpf\": \"<string>\"\n}"
+								},
+								{
+									"name": "Requisição inválida",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nome\": \"<string>\",\n  \"email\": \"<string>\",\n  \"cpf\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{baseUrl}}/api/clientes"
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"statusCode\": \"<integer>\",\n  \"mensagemErro\": \"<string>\"\n}"
+								},
+								{
+									"name": "Cliente não cadastrado",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nome\": \"<string>\",\n  \"email\": \"<string>\",\n  \"cpf\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{baseUrl}}/api/clientes"
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"statusCode\": \"<integer>\",\n  \"mensagemErro\": \"<string>\"\n}"
+								},
+								{
+									"name": "Erro no servidor interno",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nome\": \"<string>\",\n  \"email\": \"<string>\",\n  \"cpf\": \"<string>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": "{{baseUrl}}/api/clientes"
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"statusCode\": \"<integer>\",\n  \"mensagemErro\": \"<string>\"\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/"
+		}
+	]
+}
