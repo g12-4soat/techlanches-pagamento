@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Amazon.Runtime.Internal.Util;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.Text;
 using System.Text.Json;
@@ -23,14 +25,14 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
             var httpClientFactory = Substitute.For<IHttpClientFactory>();
             var pedidoResponseJsonMock = JsonSerializer.Serialize(new PedidoResponseDTO { Id = 1 });
             var handler = new FakeHttpMessageHandler(pedidoResponseJsonMock, System.Net.HttpStatusCode.OK);
+            var logger = Substitute.For<ILogger<PedidoGateway>>();
             _httpClient = new HttpClient(handler)
             {
                 BaseAddress = new Uri("https://example.com/") 
             };
             httpClientFactory.CreateClient(Constantes.API_PEDIDO).Returns(_httpClient);
             _cache = new MemoryCache(new MemoryCacheOptions());
-            _pedidoGateway = new PedidoGateway(httpClientFactory, _cache);
-            _pedidoController = new PedidoController(httpClientFactory, _cache);
+            _pedidoController = new PedidoController(httpClientFactory, _cache, logger);
         }
 
         [Fact]
