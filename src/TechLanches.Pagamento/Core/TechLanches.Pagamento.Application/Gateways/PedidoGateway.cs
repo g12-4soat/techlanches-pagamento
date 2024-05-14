@@ -34,7 +34,7 @@ namespace TechLanches.Pagamento.Application.Gateways
 
             if (response.IsSuccessStatusCode == false)
             {
-                _logger.LogInformation($"Erro durante chamada api de pedidos. Status Code:{response.StatusCode}. Response: {response.Content.ReadAsStringAsync()}.");
+                _logger.LogInformation("Erro durante chamada api de pedidos. Status Code:{StatusCode}. Response: {response}.", response.StatusCode, response.Content.ReadAsStringAsync());
                 throw new Exception("Erro durante chamada api de pedidos.");
             }
             _logger.LogInformation($"Sucesso na chamada da api de pedidos.");
