@@ -7,6 +7,7 @@ using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Core;
 using TechLanches.Pagamento.Domain.Enums.Pedido;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace TechLanches.Pagamento.Application.Gateways
 {
@@ -14,23 +15,29 @@ namespace TechLanches.Pagamento.Application.Gateways
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
-        public PedidoGateway(IHttpClientFactory httpClientFactory, IMemoryCache cache)
+        private readonly ILogger<PedidoGateway> _logger;
+        public PedidoGateway(IHttpClientFactory httpClientFactory, IMemoryCache cache, ILogger<PedidoGateway> logger)
         {
             _cache = cache;
             _httpClient = httpClientFactory.CreateClient(Constantes.Constantes.API_PEDIDO);
+            _logger = logger;
         }
 
         public async Task<PedidoResponseDTO> TrocarStatus(int pedidoId, StatusPedido statusPedido)
         {
             var token = _cache.Get("authtoken").ToString().Split(" ")[1];
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var content = new StringContent(((int)statusPedido).ToString(), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PutAsync($"api/pedidos/{pedidoId}/trocarstatus", content);
 
             if (response.IsSuccessStatusCode == false)
+            {
+                _logger.LogInformation($"Erro durante chamada api de pedidos. Status Code:{response.StatusCode}. Response: {response.Content.ReadAsStringAsync()}.");
                 throw new Exception("Erro durante chamada api de pedidos.");
+            }
+            _logger.LogInformation($"Sucesso na chamada da api de pedidos.");
 
             string resultStr = await response.Content.ReadAsStringAsync();
 
