@@ -27,7 +27,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.UseCases
             var pagamentoResult = await PagamentoUseCase.Cadastrar(pedidoId, formaPagamento, valor, pagamentoGateway);
 
             // Assert
-            await pagamentoGateway.Received(1).Cadastrar(Arg.Any<Pagamento.Domain.Aggregates.Pagamento>());
+            await pagamentoGateway.Received(2).Cadastrar(Arg.Any<Pagamento.Domain.Aggregates.Pagamento>());
             Assert.Equal(pedidoId, pagamentoResult.PedidoId);
             Assert.Equal(valor, pagamentoResult.Valor);
             Assert.Equal(formaPagamento, pagamentoResult.FormaPagamento);
