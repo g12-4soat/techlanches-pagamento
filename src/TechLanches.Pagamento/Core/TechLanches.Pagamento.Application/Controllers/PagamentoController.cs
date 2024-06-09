@@ -1,5 +1,7 @@
-﻿using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
+﻿using System.Drawing;
+using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
+using TechLanches.Pagamento.Adapter.RabbitMq;
 using TechLanches.Pagamento.Application.DTOs;
 using TechLanches.Pagamento.Application.Gateways;
 using TechLanches.Pagamento.Application.Gateways.Interfaces;
@@ -50,7 +52,11 @@ namespace TechLanches.Pagamento.Application.Controllers
             return await pagamentoGateway.ConsultarPagamento(pedidoComercial);
         }
 
-
+        public async Task ProcessarMensagem(PedidoCriadoMessage message)
+        {
+            var pagamento = await PagamentoUseCase.Cadastrar(message.Id, FormaPagamento.QrCodeMercadoPago, message.Valor, pagamentoGateway);
+        }
+         
         public async Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento)
         {
             var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);
