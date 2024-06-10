@@ -11,4 +11,8 @@
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\TechLanches.Pagamento.Domain\TechLanches.Pagamento.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

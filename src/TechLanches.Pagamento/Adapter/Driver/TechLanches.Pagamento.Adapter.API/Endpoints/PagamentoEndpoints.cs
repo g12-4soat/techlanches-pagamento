@@ -68,16 +68,9 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
 
             var pagamento = await pagamentoController.RealizarPagamento(request.PedidoId, pagamentoExistente.StatusPagamento);
 
-            if (pagamento)
-            {
-                await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoRecebido);
-                return Results.Ok();
-            }
-            else
-            {
-                await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoCanceladoPorPagamentoRecusado);
-                return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
-            }
+            return pagamento == true
+                ? Results.Ok()
+                : Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
         }
     }
 }
