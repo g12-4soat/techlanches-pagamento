@@ -61,6 +61,11 @@ namespace TechLanches.Pagamento.Application.Controllers
             return await pagamentoGateway.ConsultarPagamento(pedidoComercial);
         }
 
+        public async Task<string> GerarQrCode()
+        {
+            return await pagamentoGateway.GerarPagamentoEQrCode();
+        }
+
         public async Task ProcessarMensagem(PedidoCriadoMessage message)
         {
             await PagamentoUseCase.Cadastrar(message.Id, FormaPagamento.QrCodeMercadoPago, message.Valor, pagamentoGateway);

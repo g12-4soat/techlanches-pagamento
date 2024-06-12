@@ -8,6 +8,7 @@ namespace TechLanches.Pagamento.Application.Controllers
     public interface IPagamentoController
     {
         Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento);
+        Task<string> GerarQrCode();
         Task<PagamentoResponseDTO> BuscarPagamentoPorPedidoId(int pedidoId);
         Task<PagamentoResponseDTO> Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor);
         Task ProcessarMensagem(PedidoCriadoMessage message);

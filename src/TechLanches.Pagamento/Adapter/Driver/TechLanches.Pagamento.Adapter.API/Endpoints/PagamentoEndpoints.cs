@@ -5,6 +5,7 @@ using System.Net;
 using TechLanches.Pagamento.Adapter.API.Constantes;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.DTOs;
+using TechLanches.Pagamento.Domain.Aggregates;
 using TechLanches.Pagamento.Domain.Enums.Pedido;
 
 namespace TechLanches.Pagamento.Adapter.API.Endpoints
@@ -27,6 +28,13 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
              .RequireAuthorization();
+
+            app.MapPost("api/pagamentos/qrcode", GerarQrCode).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
+             .WithMetadata(new SwaggerOperationAttribute(summary: "Gera qrcode", description: "Retorna o qrcode"))
+             .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Qrcode gerado com sucesso"))
+             .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
+             .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
+            .RequireAuthorization();
 
             app.MapPost("api/pagamentos/webhook/mockado", RealizarPagamentoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
                .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento mockado", description: "Retorna o pagamento"))
@@ -56,7 +64,12 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                : Results.BadRequest(new ErrorResponseDTO { MensagemErro = "Erro ao cadastrar pagamento.", StatusCode = HttpStatusCode.BadRequest });
         }
 
-
+        private static async Task<IResult> GerarQrCode([FromServices] IPagamentoController pagamentoController)
+        {
+            var qrCode = await pagamentoController.GerarQrCode();
+            var pagamentoResponse = new PagamentoResponseDTO { QRCodeData = qrCode };
+            return Results.Ok(pagamentoResponse);
+        }
         private static async Task<IResult> RealizarPagamentoMocado([FromBody] PagamentoMocadoRequestDTO request, [FromServices] IPagamentoController pagamentoController,
             [FromServices] IPedidoController pedidoController,
             [FromServices] IMemoryCache memoryCache,
