@@ -6,6 +6,7 @@ using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Presenters.Interfaces;
 using TechLanches.Pagamento.Application.UseCases.Pagamentos;
+using TechLanches.Pagamento.Domain.Aggregates;
 using TechLanches.Pagamento.Domain.Enums;
 
 namespace TechLanches.Pagamento.Application.Controllers
@@ -50,6 +51,16 @@ namespace TechLanches.Pagamento.Application.Controllers
             return await pagamentoGateway.ConsultarPagamento(pedidoComercial);
         }
 
+        public async Task<bool> InativarPagamento(int pedidoId)
+        {
+            var pagamento = await pagamentoGateway.BuscarPagamentoPorPedidoId(pedidoId);
+
+            pagamento.Inativar();
+
+            var retorno = await pagamentoGateway.Atualizar(pagamento);
+
+            return !retorno.Ativo;
+        }
 
         public async Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento)
         {

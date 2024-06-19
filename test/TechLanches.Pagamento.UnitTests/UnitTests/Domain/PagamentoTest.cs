@@ -1,5 +1,4 @@
 ﻿using TechLanches.Pagamento.Core;
-using TechLanches.Pagamento.Domain.Aggregates;
 using TechLanches.Pagamento.Domain.Enums;
 
 namespace TechLanches.Pagamento.UnitTests.UnitTests.Domain
@@ -23,6 +22,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Domain
             Assert.Equal(valor, pagamento.Valor);
             Assert.Equal(FormaPagamento.QrCodeMercadoPago, pagamento.FormaPagamento);
             Assert.Equal(StatusPagamento.Aguardando, pagamento.StatusPagamento);
+            Assert.True(pagamento.Ativo);
         }
 
         [Fact(DisplayName = "Criar pagamento com id com sucesso")]
@@ -41,6 +41,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Domain
             Assert.Equal(pedidoId, pagamento.PedidoId);
             Assert.Equal(valor, pagamento.Valor);
             Assert.Equal(StatusPagamento.Aguardando, pagamento.StatusPagamento);
+            Assert.True(pagamento.Ativo);
         }
 
         [Theory(DisplayName = "Criar pagamento com falha")]
@@ -97,5 +98,27 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Domain
             Assert.Throws<DomainException>(() => new Pagamento.Domain.Aggregates.Pagamento(1, -100, FormaPagamento.QrCodeMercadoPago));
         }
 
+        [Fact]
+        public void InativarPagamento()
+        {
+            //Arrange    
+            var pedidoId = 1;
+            var valor = 100;
+
+            //Act 
+            var pagamento = new Pagamento.Domain.Aggregates.Pagamento(pedidoId, valor, FormaPagamento.QrCodeMercadoPago);
+
+            //Assert
+            Assert.NotNull(pagamento);
+            Assert.Equal(pedidoId, pagamento.PedidoId);
+            Assert.Equal(valor, pagamento.Valor);
+            Assert.Equal(FormaPagamento.QrCodeMercadoPago, pagamento.FormaPagamento);
+            Assert.Equal(StatusPagamento.Aguardando, pagamento.StatusPagamento);
+            Assert.True(pagamento.Ativo);
+
+            pagamento.Inativar();
+
+            Assert.False(pagamento.Ativo);
+        }
     }
 }

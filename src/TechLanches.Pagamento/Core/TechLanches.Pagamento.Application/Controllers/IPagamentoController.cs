@@ -10,5 +10,6 @@ namespace TechLanches.Pagamento.Application.Controllers
         Task<PagamentoResponseDTO> BuscarPagamentoPorPedidoId(int pedidoId);
         Task<PagamentoResponseDTO> Cadastrar(int pedidoId, FormaPagamento formaPagamento, decimal valor);
         Task<PagamentoResponseACLDTO> ConsultarPagamentoMockado(string pedidoComercial);
+        Task<bool> InativarPagamento(int pedidoId);
     }
 }

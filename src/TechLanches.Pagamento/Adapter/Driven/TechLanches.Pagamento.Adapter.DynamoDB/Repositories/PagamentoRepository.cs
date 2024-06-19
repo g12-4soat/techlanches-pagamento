@@ -25,6 +25,8 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
             pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
+            pagamentoDynamoModel.Ativo = pagamento.Ativo;
+
             await _context.SaveAsync(pagamentoDynamoModel);
 
             return pagamento;
@@ -59,7 +61,12 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
         public async Task<Domain.Aggregates.Pagamento> Cadastrar(Domain.Aggregates.Pagamento pagamento)
         {
-            var pagamentoDynamoModel = new PagamentoDbModel(pagamento.PedidoId, pagamento.Valor, (int)pagamento.StatusPagamento, (int)pagamento.FormaPagamento);
+            var pagamentoDynamoModel = new PagamentoDbModel(
+                pagamento.PedidoId,
+                pagamento.Valor,
+                (int)pagamento.StatusPagamento,
+                (int)pagamento.FormaPagamento,
+                pagamento.Ativo);
             await _context.SaveAsync(pagamentoDynamoModel);
 
             return pagamento;
