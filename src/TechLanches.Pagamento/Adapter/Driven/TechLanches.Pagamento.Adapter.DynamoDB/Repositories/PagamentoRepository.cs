@@ -49,7 +49,7 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             {
                 IndexName = "pedidoIdIndex"
             });
-            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).FirstOrDefault();
+            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).Where(x => x.Ativo).FirstOrDefault();
 
             if (pagamentoDynamoModel is null)
                 return null;

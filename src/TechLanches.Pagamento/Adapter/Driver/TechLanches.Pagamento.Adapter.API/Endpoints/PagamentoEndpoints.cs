@@ -20,14 +20,14 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pedido não encontrado"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-               .RequireAuthorization();
+               ;//.RequireAuthorization();
 
             app.MapPost("api/pagamentos", CadastrarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
               .WithMetadata(new SwaggerOperationAttribute(summary: "Cria pagamento", description: "Retorna o pagamento"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.Created, description: "Pagamento criado com sucesso"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-             .RequireAuthorization();
+             ;//.RequireAuthorization();
 
             app.MapPost("api/pagamentos/webhook/mockado", RealizarPagamentoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
                .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento mockado", description: "Retorna o pagamento"))
@@ -35,15 +35,15 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-              .RequireAuthorization();
+              ;//.RequireAuthorization();
 
-            app.MapDelete("api/pagamentos/inativar", RealizarPagamentoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
+            app.MapDelete("api/pagamentos/inativar/{pedidoId}", InativarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
                .WithMetadata(new SwaggerOperationAttribute(summary: "Inativação de dados de pagamento por pedido id", description: "Retorna sucesso ou falha da operação"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-              .RequireAuthorization();
+              ;//.RequireAuthorization();
         }
 
         private static async Task<IResult> BuscarStatusPagamentoPorPedidoId([FromRoute] int pedidoId, [FromServices] IPagamentoController pagamentoController)
@@ -88,7 +88,7 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
             }
         }
 
-        public static async Task<IResult> InativarPagamento([FromRoute] int pedidoId, [FromServices] IPagamentoController pagamentoController)
+        private static async Task<IResult> InativarPagamento([FromRoute] int pedidoId, [FromServices] IPagamentoController pagamentoController)
         {
             var pagamento = await pagamentoController.BuscarPagamentoPorPedidoId(pedidoId);
 
