@@ -17,13 +17,12 @@ namespace TechLanches.Pagamento.Domain.Aggregates
             Validar();
         }
 
-        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento):base(id)
+        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento, bool ativo):base(id)
         {
             PedidoId = pedidoId;
             Valor = valor;
             StatusPagamento = statusPagamento;
-            Ativar();
-            Validar();
+            Ativo = ativo;
         }
 
         public int PedidoId { get; private set; }

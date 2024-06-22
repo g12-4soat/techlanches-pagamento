@@ -37,7 +37,7 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
               ;//.RequireAuthorization();
 
-            app.MapDelete("api/pagamentos/inativar/{pedidoId}", InativarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
+            app.MapDelete("api/pagamentos/inativar/{cpf}", InativarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
                .WithMetadata(new SwaggerOperationAttribute(summary: "Inativação de dados de pagamento por pedido id", description: "Retorna sucesso ou falha da operação"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
@@ -88,19 +88,14 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
             }
         }
 
-        private static async Task<IResult> InativarPagamento([FromRoute] int pedidoId, [FromServices] IPagamentoController pagamentoController)
+        private static async Task<IResult> InativarPagamento([FromRoute] string cpf, [FromServices] IPagamentoController pagamentoController)
         {
-            var pagamento = await pagamentoController.BuscarPagamentoPorPedidoId(pedidoId);
-
-            if (pagamento is null)
-                return Results.NotFound(new ErrorResponseDTO { MensagemErro = $"Nenhum pedido encontrado para o id: {pedidoId}", StatusCode = HttpStatusCode.NotFound });
-
-            var resultado = await pagamentoController.InativarPagamento(pedidoId);
+            var resultado = await pagamentoController.InativarPagamentos(cpf);
 
             if (resultado)
-                return Results.Ok($"Inativação de dados de pagamento do pedido {pedidoId} realizada com sucesso.");
+                return Results.Ok($"Inativação de dados de pagamento do cliente realizada com sucesso.");
             else
-                return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Não foi possível inativar os dados de pagamento do pedido {pedidoId}", StatusCode = HttpStatusCode.BadRequest });
+                return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Não foi possível inativar os dados de pagamento do cliente", StatusCode = HttpStatusCode.BadRequest });
         }
     }
 }

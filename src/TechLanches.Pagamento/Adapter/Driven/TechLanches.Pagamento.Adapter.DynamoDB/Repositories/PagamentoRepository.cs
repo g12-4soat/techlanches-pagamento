@@ -39,7 +39,13 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             if (pagamentoDynamoModel is null)
                 return null;
 
-            var pagamento = new Domain.Aggregates.Pagamento(pagamentoDynamoModel.Id, pagamentoDynamoModel.PedidoId, pagamentoDynamoModel.Valor, (StatusPagamento)pagamentoDynamoModel.StatusPagamento);
+            var pagamento = new Domain.Aggregates.Pagamento(
+                pagamentoDynamoModel.Id,
+                pagamentoDynamoModel.PedidoId,
+                pagamentoDynamoModel.Valor,
+                (StatusPagamento)pagamentoDynamoModel.StatusPagamento,
+                pagamentoDynamoModel.Ativo);
+
             return pagamento;
         }
 
@@ -54,7 +60,12 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             if (pagamentoDynamoModel is null)
                 return null;
 
-            var pagamento = new Domain.Aggregates.Pagamento(pagamentoDynamoModel.Id, pagamentoDynamoModel.PedidoId, pagamentoDynamoModel.Valor, (StatusPagamento)pagamentoDynamoModel.StatusPagamento);
+            var pagamento = new Domain.Aggregates.Pagamento(
+                pagamentoDynamoModel.Id,
+                pagamentoDynamoModel.PedidoId,
+                pagamentoDynamoModel.Valor,
+                (StatusPagamento)pagamentoDynamoModel.StatusPagamento,
+                pagamentoDynamoModel.Ativo);
 
             return pagamento;
         }
@@ -67,9 +78,27 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 (int)pagamento.StatusPagamento,
                 (int)pagamento.FormaPagamento,
                 pagamento.Ativo);
+
             await _context.SaveAsync(pagamentoDynamoModel);
 
             return pagamento;
+        }
+
+        public async Task<List<Domain.Aggregates.Pagamento>> BuscarPagamentosPorPedidosId(List<int> pedidosId)
+        {
+            List<Domain.Aggregates.Pagamento> pagamentos = new();
+
+            foreach (var pedidoId in pedidosId)
+            {
+                var pagamento = await BuscarPagamentoPorPedidoId(pedidoId);
+
+                if (pagamento is not null)
+                {
+                    pagamentos.Add(pagamento);
+                }
+            }
+
+            return pagamentos;
         }
     }
 }

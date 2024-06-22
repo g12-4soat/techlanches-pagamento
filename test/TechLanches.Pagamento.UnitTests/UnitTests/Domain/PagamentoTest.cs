@@ -34,7 +34,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Domain
             var valor = 100;
 
             //Act 
-            var pagamento = new Pagamento.Domain.Aggregates.Pagamento(pagamentoId, pedidoId, valor, StatusPagamento.Aguardando);
+            var pagamento = new Pagamento.Domain.Aggregates.Pagamento(pagamentoId, pedidoId, valor, StatusPagamento.Aguardando, true);
 
             //Assert
             Assert.NotNull(pagamento);

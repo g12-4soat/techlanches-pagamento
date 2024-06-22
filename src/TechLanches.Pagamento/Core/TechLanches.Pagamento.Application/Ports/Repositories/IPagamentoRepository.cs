@@ -8,5 +8,6 @@ namespace TechLanches.Pagamento.Application.Ports.Repositories
         Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorId(string pagamentoId);
         Task<Domain.Aggregates.Pagamento> Cadastrar(Domain.Aggregates.Pagamento pagamento);
         Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento);
+        Task<List<Domain.Aggregates.Pagamento>> BuscarPagamentosPorPedidosId(List<int> pedidosId);
     }
 }

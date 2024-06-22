@@ -6,5 +6,6 @@ namespace TechLanches.Pagamento.Application.Gateways.Interfaces
     public interface IPedidoGateway
     {
         Task<PedidoResponseDTO> TrocarStatus(int pedidoId, StatusPedido statusPedido);
+        Task<List<PedidoResponseDTO>?> BuscarPedidosPorCpf(string cpf);
     }
 }
