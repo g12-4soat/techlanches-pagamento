@@ -64,8 +64,7 @@ namespace TechLanches.Pagamento.Application.Controllers
 
             var pedidos = await _pedidoGateway.BuscarPedidosPorCpf(cpf);
 
-            if (pedidos is not null
-                || pedidos.Count > 0)
+            if (pedidos.Count > 0)
             {
                 var pedidosId = pedidos.Select(x => x.Id).ToList();
                 var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
