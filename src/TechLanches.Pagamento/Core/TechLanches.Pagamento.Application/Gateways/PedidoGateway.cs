@@ -38,7 +38,7 @@ namespace TechLanches.Pagamento.Application.Gateways
             return pedido;
         }
 
-        public async Task<List<PedidoResponseDTO>?> BuscarPedidosPorCpf(string cpf)
+        public async Task<List<PedidoResponseDTO>> BuscarPedidosPorCpf(string cpf)
         {
             SetAuthToken();
 
@@ -50,7 +50,7 @@ namespace TechLanches.Pagamento.Application.Gateways
 
             var pedidos = JsonSerializer.Deserialize<List<PedidoResponseDTO>>(resultStr);
 
-            return pedidos;
+            return pedidos ?? new();
         }
 
         private void LogResponse(HttpResponseMessage response)
@@ -64,7 +64,7 @@ namespace TechLanches.Pagamento.Application.Gateways
             _logger.LogInformation($"Sucesso na chamada da api de pedidos.");
         }
 
-        private void SetAuthToken()
+                private void SetAuthToken()
         {
             var token = _cache.Get("authtoken").ToString().Split(" ")[1];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
