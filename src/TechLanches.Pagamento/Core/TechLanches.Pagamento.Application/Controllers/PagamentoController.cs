@@ -65,7 +65,7 @@ namespace TechLanches.Pagamento.Application.Controllers
             var pedidos = await _pedidoGateway.BuscarPedidosPorCpf(cpf);
 
             if (pedidos is not null
-                || pedidos?.Count > 0)
+                || pedidos.Count > 0)
             {
                 var pedidosId = pedidos.Select(x => x.Id).ToList();
                 var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
@@ -78,7 +78,7 @@ namespace TechLanches.Pagamento.Application.Controllers
 
                     if (!retorno.Ativo)
                     {
-                        _logger.LogError("Erro ao tentar inativar o pagamento {pagamento.Id}", pagamento.Id);
+                        _logger.LogError("Erro ao tentar inativar o pagamento {pagamentoId}", pagamento.Id);
                     }
 
                     sucesso = sucesso && !retorno.Ativo;
