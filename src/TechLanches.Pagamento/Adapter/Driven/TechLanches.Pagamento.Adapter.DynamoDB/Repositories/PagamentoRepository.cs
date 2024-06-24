@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
+using TechLanches.Pagamento.Adapter.RabbitMq;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Domain.Enums;
 
@@ -61,17 +62,35 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 }
             };
 
-            // Configuração da transação
+            // Cria a mensagem Outbox
+            var outboxMessage = new OutboxMessageDbModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                PagamentoId = pagamento.Id,
+                Processado = "0",
+            };
+
+            // Configuração da inserção na tabela Outbox
+            var putOutboxRequest = new Put
+            {
+                TableName = "outboxMessage",
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    { "Id", new AttributeValue { S = outboxMessage.Id } },
+                    { "PagamentoId", new AttributeValue { S = outboxMessage.PagamentoId } },
+                    { "Processado", new AttributeValue { S = outboxMessage.Processado.ToString()} },
+                }
+            };
+
             var transactWriteItemsRequest = new TransactWriteItemsRequest
             {
                 TransactItems = new List<TransactWriteItem>
-                {
-                    new TransactWriteItem
-                    {
-                        Update = updatePagamentoRequest
-                    }
-                }
+        {
+            new TransactWriteItem { Update = updatePagamentoRequest },
+            new TransactWriteItem { Put = putOutboxRequest }
+        }
             };
+
 
             try
             {

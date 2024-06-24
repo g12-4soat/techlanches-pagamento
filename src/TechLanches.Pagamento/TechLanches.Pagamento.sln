@@ -29,9 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechLanches.Pagamento.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechLanches.Pagamento.UnitTests", "..\..\test\TechLanches.Pagamento.UnitTests\TechLanches.Pagamento.UnitTests.csproj", "{CC5366EB-A1F9-4B95-8EC7-8A35D6F905AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLanches.Pagamento.Adapter.RabbitMq", "Adapter\Driven\TechLanches.Pagamento.Adapter.RabbitMq\TechLanches.Pagamento.Adapter.RabbitMq.csproj", "{BF162961-FB6D-4529-9DC6-E92D3164D2E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechLanches.Pagamento.Adapter.RabbitMq", "Adapter\Driven\TechLanches.Pagamento.Adapter.RabbitMq\TechLanches.Pagamento.Adapter.RabbitMq.csproj", "{BF162961-FB6D-4529-9DC6-E92D3164D2E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLanches.Pagamento.Adapter.Consumer", "Adapter\Driver\TechLanches.Pagamento.Adapter.Consumer\TechLanches.Pagamento.Adapter.Consumer.csproj", "{F65F9C31-F629-4688-BE80-6651711F7F72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechLanches.Pagamento.Adapter.Consumer", "Adapter\Driver\TechLanches.Pagamento.Adapter.Consumer\TechLanches.Pagamento.Adapter.Consumer.csproj", "{F65F9C31-F629-4688-BE80-6651711F7F72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechLanches.Pagamento.Adapter.Outbox", "Adapter\Driver\TechLanches.Pagamento.Adapter.Outbox\TechLanches.Pagamento.Adapter.Outbox.csproj", "{17B5E54B-6B0E-4014-A4D2-11BF359B65F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{F65F9C31-F629-4688-BE80-6651711F7F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F65F9C31-F629-4688-BE80-6651711F7F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F65F9C31-F629-4688-BE80-6651711F7F72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17B5E54B-6B0E-4014-A4D2-11BF359B65F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17B5E54B-6B0E-4014-A4D2-11BF359B65F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17B5E54B-6B0E-4014-A4D2-11BF359B65F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17B5E54B-6B0E-4014-A4D2-11BF359B65F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{CC5366EB-A1F9-4B95-8EC7-8A35D6F905AE} = {F28F9A41-5935-47A2-B852-CE4C74ED0F5C}
 		{BF162961-FB6D-4529-9DC6-E92D3164D2E4} = {08B9A1A0-EDF2-492A-BE29-E7AFA2E53CF7}
 		{F65F9C31-F629-4688-BE80-6651711F7F72} = {E8D60014-A222-4A59-9C98-EB42B206AE2A}
+		{17B5E54B-6B0E-4014-A4D2-11BF359B65F9} = {E8D60014-A222-4A59-9C98-EB42B206AE2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69A6DC52-21FF-4740-B521-33D795FB484E}
