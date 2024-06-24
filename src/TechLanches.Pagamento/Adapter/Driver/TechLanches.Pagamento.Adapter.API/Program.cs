@@ -52,8 +52,10 @@ builder.Services.AddHostedService<PagamentoConsumerHostedService>();
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
-    var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE");
-    httpClient.BaseAddress = new Uri($"http://{url}:5050");
+    //var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE");
+    //httpClient.BaseAddress = new Uri($"http://{url}:5050");
+
+    httpClient.BaseAddress = new Uri($"http://localhost:5298");
 }).AddPolicyHandler(retryPolicy);
 
 builder.Services.AddMemoryCache();

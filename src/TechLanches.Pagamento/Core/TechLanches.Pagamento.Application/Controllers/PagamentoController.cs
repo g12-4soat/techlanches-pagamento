@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
+using System.Transactions;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Adapter.RabbitMq;
@@ -73,21 +74,26 @@ namespace TechLanches.Pagamento.Application.Controllers
 
         public async Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento)
         {
-            var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);
-            await pagamentoGateway.Atualizar(pagamento);
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);
+                await pagamentoGateway.Atualizar(pagamento);
 
-            PedidoStatusMessage pedidoStatusMessage;
+                PedidoStatusMessage pedidoStatusMessage;
 
-            var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Aprovado;
+                var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Aprovado;
 
-            if (pagamentoFoiAprovado)
-                pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoRecebido);
-            else
-                pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoCanceladoPorPagamentoRecusado);
+                if (pagamentoFoiAprovado)
+                    pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoRecebido);
+                else
+                    pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoCanceladoPorPagamentoRecusado);
 
-            _rabbitMqService.Publicar(pedidoStatusMessage, _rabbitOptions.QueueOrderStatus);
+                _rabbitMqService.Publicar(pedidoStatusMessage, _rabbitOptions.QueueOrderStatus);
 
-            return pagamentoFoiAprovado;
+                scope.Complete();
+
+                return pagamentoFoiAprovado;
+            }
         }
     }
 }

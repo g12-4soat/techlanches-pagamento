@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
+using TechLanches.Pagamento.Adapter.RabbitMq.Messaging;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Presenters;
@@ -17,13 +18,14 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
 
             services.AddSingleton<IPagamentoPresenter, PagamentoPresenter>();
 
-            services.AddScoped<IPagamentoController, PagamentoController>();
-            services.AddScoped<IPedidoController, PedidoController>();
+            services.AddSingleton<IPagamentoController, PagamentoController>();
+            services.AddSingleton<IPedidoController, PedidoController>();
 
-            services.AddScoped<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
+            services.AddSingleton<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
 
-            services.AddScoped<IPagamentoRepository, PagamentoRepository>();
+            services.AddSingleton<IPagamentoRepository, PagamentoRepository>();
 
+            services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
             services.AddSingleton<IAmazonDynamoDB>(sp =>
             {
