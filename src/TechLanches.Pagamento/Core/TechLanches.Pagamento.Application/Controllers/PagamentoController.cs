@@ -64,24 +64,38 @@ namespace TechLanches.Pagamento.Application.Controllers
 
             var pedidos = await _pedidoGateway.BuscarPedidosPorCpf(cpf);
 
-            if (pedidos.Count > 0)
+            if (pedidos is null || pedidos.Count == 0)
             {
-                var pedidosId = pedidos.Select(x => x.Id).ToList();
-                var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
+                _logger.LogInformation("Não existem pagamentos a serem inativados");
+                return sucesso;
+            }
 
-                foreach (var pagamento in pagamentos)
+            var pedidosId = pedidos.Select(x => x.Id).ToList();
+            var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
+
+            foreach (var pagamento in pagamentos)
+            {
+                Domain.Aggregates.Pagamento retorno;
+
+                pagamento.Inativar();
+
+                try
                 {
-                    pagamento.Inativar();
+                    retorno = await _pagamentoGateway.Atualizar(pagamento);
 
-                    var retorno = await _pagamentoGateway.Atualizar(pagamento);
-
-                    if (!retorno.Ativo)
+                    if (retorno.Ativo)
                     {
-                        _logger.LogError("Erro ao tentar inativar o pagamento {pagamentoId}", pagamento.Id);
+                        _logger.LogError("Ocorreu um problema ao tentar inativar o pagamento {pagamentoId}", pagamento.Id);
                     }
-
-                    sucesso = sucesso && !retorno.Ativo;
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro não identificado ao tentar inativar o pagamento {pagamentoId}", pagamento.Id);
+
+                    throw;
+                }
+
+                sucesso = sucesso && !retorno.Ativo;
             }
 
             return sucesso;
