@@ -64,7 +64,11 @@ builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
-
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    await next();
+});
 app.UseHsts();
 app.UseRouting();
 app.AddCustomMiddlewares();
