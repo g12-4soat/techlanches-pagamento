@@ -24,6 +24,16 @@ builder.Services.Configure<TechLanchesCognitoSecrets>(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Colocado somente para conseguir rodar local... Recomendação da Microsoft é para rodar somente em produção
+//TODO: Remover antes de finalizar a fase 
+builder.Services.AddHsts(options =>
+{
+    options.ExcludedHosts.Clear();
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60);
+});
+
 //Add cognito auth
 builder.Services.AddAuthenticationConfig();
 
@@ -55,6 +65,7 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
+app.UseHsts();
 app.UseRouting();
 app.AddCustomMiddlewares();
 app.UseAuthentication();
