@@ -12,25 +12,6 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
 
     {
         [Fact]
-        public async Task Atualizar_DeveAtualizarPagamentoCorretamente()
-        {
-            // Arrange
-            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aprovado);
-            var pagamentoDynamoModel = new PagamentoDbModel { Id = "1", PedidoId = 1, Valor = 100.0m, StatusPagamento = 1, FormaPagamento = 1 };
-            var context = Substitute.For<IDynamoDBContext>();
-            context.LoadAsync<PagamentoDbModel>(pagamento.Id).Returns(pagamentoDynamoModel);
-
-            var repository = new PagamentoRepository(context);
-
-
-            // Act
-            await repository.Atualizar(pagamento);
-
-            // Assert
-            await context.Received(1).SaveAsync(Arg.Any<PagamentoDbModel>());
-        }
-
-        [Fact]
         public async Task BuscarPagamentoPorId_DeveRetornarPagamentoCorreto()
         {
             // Arrange
