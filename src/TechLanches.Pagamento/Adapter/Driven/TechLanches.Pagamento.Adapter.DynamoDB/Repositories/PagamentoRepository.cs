@@ -22,15 +22,15 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             _context = context;
         }
 
-        //public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
-        //{
-        //    var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
+        public async Task<Domain.Aggregates.Pagamento> AtualizarDados(Domain.Aggregates.Pagamento pagamento)
+        {
+            var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
-        //    pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
-        //    await _context.SaveAsync(pagamentoDynamoModel);
+            pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
+            await _context.SaveAsync(pagamentoDynamoModel);
 
-        //    return pagamento;
-        //}
+            return pagamento;
+        }
 
         public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
         {
