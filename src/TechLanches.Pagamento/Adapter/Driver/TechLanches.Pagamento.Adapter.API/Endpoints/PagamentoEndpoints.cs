@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Net;
 using TechLanches.Pagamento.Adapter.API.Constantes;
 using TechLanches.Pagamento.Application.Controllers;
@@ -26,10 +27,18 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.Created, description: "Pagamento criado com sucesso"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
-             .RequireAuthorization();
+              .RequireAuthorization();
 
             app.MapPost("api/pagamentos/webhook/mockado", RealizarPagamentoMocado).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
                .WithMetadata(new SwaggerOperationAttribute(summary: "Webhook pagamento mockado", description: "Retorna o pagamento"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
+               .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.InternalServerError, type: typeof(ErrorResponseDTO), description: "Erro no servidor interno"))
+              .RequireAuthorization();
+
+            app.MapDelete("api/pagamentos/inativar/{cpf}", InativarPagamento).WithTags(EndpointTagConstantes.TAG_PAGAMENTO)
+               .WithMetadata(new SwaggerOperationAttribute(summary: "Inativação de dados de pagamento por pedido id", description: "Retorna sucesso ou falha da operação"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.OK, description: "Pagamento encontrado com sucesso"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.BadRequest, type: typeof(ErrorResponseDTO), description: "Requisição inválida"))
                .WithMetadata(new SwaggerResponseAttribute((int)HttpStatusCode.NotFound, type: typeof(ErrorResponseDTO), description: "Pagamento não encontrado"))
@@ -56,7 +65,6 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                : Results.BadRequest(new ErrorResponseDTO { MensagemErro = "Erro ao cadastrar pagamento.", StatusCode = HttpStatusCode.BadRequest });
         }
 
-
         private static async Task<IResult> RealizarPagamentoMocado([FromBody] PagamentoMocadoRequestDTO request, [FromServices] IPagamentoController pagamentoController,
             [FromServices] IPedidoController pedidoController,
             [FromServices] IMemoryCache memoryCache,
@@ -78,6 +86,16 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                 await pedidoController.TrocarStatus(request.PedidoId, StatusPedido.PedidoCanceladoPorPagamentoRecusado);
                 return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
             }
+        }
+
+        private static async Task<IResult> InativarPagamento([FromRoute] string cpf, [FromServices] IPagamentoController pagamentoController)
+        {
+            var resultado = await pagamentoController.InativarPagamentos(cpf);
+
+            if (resultado)
+                return Results.Ok($"Inativação de dados de pagamento do cliente realizada com sucesso.");
+            else
+                return Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Não foi possível inativar os dados de pagamento do cliente", StatusCode = HttpStatusCode.BadRequest });
         }
     }
 }

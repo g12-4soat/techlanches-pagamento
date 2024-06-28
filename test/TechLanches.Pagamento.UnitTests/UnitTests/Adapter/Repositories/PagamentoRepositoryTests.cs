@@ -15,7 +15,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
         public async Task Atualizar_DeveAtualizarPagamentoCorretamente()
         {
             // Arrange
-            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aprovado);
+            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aprovado, true);
             var pagamentoDynamoModel = new PagamentoDbModel { Id = "1", PedidoId = 1, Valor = 100.0m, StatusPagamento = 1, FormaPagamento = 1 };
             var context = Substitute.For<IDynamoDBContext>();
             context.LoadAsync<PagamentoDbModel>(pagamento.Id).Returns(pagamentoDynamoModel);
@@ -73,7 +73,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
         public async Task Cadastrar_DeveCadastrarPagamentoCorretamente()
         {
             // Arrange
-            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aguardando);
+            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aguardando, true);
 
             var context = Substitute.For<IDynamoDBContext>();
 
@@ -98,7 +98,8 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
                 Id = "pagamentoId",
                 PedidoId = pedidoId,
                 Valor = 100.00m,
-                StatusPagamento = (int)StatusPagamento.Aprovado
+                StatusPagamento = (int)StatusPagamento.Aprovado,
+                Ativo = true
             };
 
             var query = Substitute.For<AsyncSearch<PagamentoDbModel>>();
@@ -117,6 +118,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
             Assert.Equal("pagamentoId", pagamento.Id);
             Assert.Equal(pedidoId, pagamento.PedidoId);
             Assert.Equal(100.00m, pagamento.Valor);
+            Assert.True(pagamento.Ativo);
             Assert.Equal(StatusPagamento.Aprovado, pagamento.StatusPagamento);
         }
 
