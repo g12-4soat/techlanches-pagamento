@@ -34,8 +34,7 @@ namespace TechLanches.Pagamento.Application.Controllers
             IPagamentoPresenter pagamentoPresenter,
             IMercadoPagoMockadoService mercadoPagoMockadoService,
             ILogger<PagamentoController> logger,
-            IPedidoGateway pedidoGateway)
-            IMercadoPagoMockadoService mercadoPagoMockadoService,
+            IPedidoGateway pedidoGateway,
             IRabbitMqService rabbitMqService,
             IOptions<RabbitOptions> rabbitOptions)
         {
@@ -127,8 +126,6 @@ namespace TechLanches.Pagamento.Application.Controllers
 
         public async Task<bool> RealizarPagamento(int pedidoId, StatusPagamentoEnum statusPagamento)
         {
-            var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, _pagamentoGateway);
-            await _pagamentoGateway.Atualizar(pagamento);
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);

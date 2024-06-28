@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
 using System.Net;
 using TechLanches.Pagamento.Adapter.API.Constantes;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.DTOs;
-using TechLanches.Pagamento.Domain.Aggregates;
-using TechLanches.Pagamento.Domain.Enums.Pedido;
 
 namespace TechLanches.Pagamento.Adapter.API.Endpoints
 {

@@ -44,8 +44,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Controllers
                 _pagamentoPresenter,
                 _mercadoPagoMockadoService,
                 _logger,
-                _pedidoGateway
-                _mercadoPagoMockadoService,
+                _pedidoGateway,
                 _rabbitMqService,
                 _rabbitMqOptions
             );

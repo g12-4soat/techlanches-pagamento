@@ -23,9 +23,8 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
             services.AddSingleton<IPagamentoController, PagamentoController>();
             services.AddSingleton<IPedidoController, PedidoController>();
 
-            services.AddScoped<IPedidoGateway, PedidoGateway>();
+            services.AddSingleton<IPedidoGateway, PedidoGateway>();
 
-            services.AddScoped<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
             services.AddSingleton<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
 
             services.AddSingleton<IPagamentoRepository, PagamentoRepository>();

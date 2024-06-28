@@ -50,13 +50,14 @@ namespace TechLanches.Pagamento.UnitTests.BDDTests.Services
             pagamentoRepository.Cadastrar(_pagamento).ReturnsForAnyArgs(_pagamento);
             mercadoPagoMockadoService.GerarPagamentoEQrCode().Returns("qrcodedata");
 
-            var pagamentoController = new PagamentoController(pagamentoRepository, new PagamentoPresenter(), mercadoPagoMockadoService, rabbitMqService, rabbitMqOptions);
             var pagamentoController = new PagamentoController(
                 pagamentoRepository,
                 new PagamentoPresenter(),
                 mercadoPagoMockadoService,
                 logger,
-                pedidoGateway);
+                pedidoGateway,
+                rabbitMqService,
+                rabbitMqOptions);
 
             _novoPagamentoDto = await pagamentoController.Cadastrar(_pagamento.PedidoId, _pagamento.FormaPagamento, _pagamento.Valor);
         }
