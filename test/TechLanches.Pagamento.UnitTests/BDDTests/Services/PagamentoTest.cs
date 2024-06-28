@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Adapter.RabbitMq.Messaging;
 using TechLanches.Pagamento.Adapter.RabbitMq.Options;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.DTOs;
+using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Presenters;
 using TechLanches.Pagamento.Domain.Enums;
@@ -40,6 +42,8 @@ namespace TechLanches.Pagamento.UnitTests.BDDTests.Services
         {
             var pagamentoRepository = Substitute.For<IPagamentoRepository>();
             var mercadoPagoMockadoService = Substitute.For<IMercadoPagoMockadoService>();
+            var logger = Substitute.For<ILogger<PagamentoController>>();
+            var pedidoGateway = Substitute.For<IPedidoGateway>();
             var rabbitMqService = Substitute.For<IRabbitMqService>();
             var rabbitMqOptions = Substitute.For<IOptions<RabbitOptions>>();
 
@@ -47,6 +51,12 @@ namespace TechLanches.Pagamento.UnitTests.BDDTests.Services
             mercadoPagoMockadoService.GerarPagamentoEQrCode().Returns("qrcodedata");
 
             var pagamentoController = new PagamentoController(pagamentoRepository, new PagamentoPresenter(), mercadoPagoMockadoService, rabbitMqService, rabbitMqOptions);
+            var pagamentoController = new PagamentoController(
+                pagamentoRepository,
+                new PagamentoPresenter(),
+                mercadoPagoMockadoService,
+                logger,
+                pedidoGateway);
 
             _novoPagamentoDto = await pagamentoController.Cadastrar(_pagamento.PedidoId, _pagamento.FormaPagamento, _pagamento.Valor);
         }

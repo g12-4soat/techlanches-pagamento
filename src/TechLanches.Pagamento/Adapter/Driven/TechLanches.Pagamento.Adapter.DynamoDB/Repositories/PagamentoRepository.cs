@@ -27,6 +27,8 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
             pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
+            pagamentoDynamoModel.Ativo = pagamento.Ativo;
+
             await _context.SaveAsync(pagamentoDynamoModel);
 
             return pagamento;
@@ -103,7 +105,13 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             if (pagamentoDynamoModel is null)
                 return null;
 
-            var pagamento = new Domain.Aggregates.Pagamento(pagamentoDynamoModel.Id, pagamentoDynamoModel.PedidoId, pagamentoDynamoModel.Valor, (StatusPagamento)pagamentoDynamoModel.StatusPagamento);
+            var pagamento = new Domain.Aggregates.Pagamento(
+                pagamentoDynamoModel.Id,
+                pagamentoDynamoModel.PedidoId,
+                pagamentoDynamoModel.Valor,
+                (StatusPagamento)pagamentoDynamoModel.StatusPagamento,
+                pagamentoDynamoModel.Ativo);
+
             return pagamento;
         }
 
@@ -113,22 +121,50 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             {
                 IndexName = "pedidoIdIndex"
             });
-            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).FirstOrDefault();
+            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).Where(x => x.Ativo).FirstOrDefault();
 
             if (pagamentoDynamoModel is null)
                 return null;
 
-            var pagamento = new Domain.Aggregates.Pagamento(pagamentoDynamoModel.Id, pagamentoDynamoModel.PedidoId, pagamentoDynamoModel.Valor, (StatusPagamento)pagamentoDynamoModel.StatusPagamento);
+            var pagamento = new Domain.Aggregates.Pagamento(
+                pagamentoDynamoModel.Id,
+                pagamentoDynamoModel.PedidoId,
+                pagamentoDynamoModel.Valor,
+                (StatusPagamento)pagamentoDynamoModel.StatusPagamento,
+                pagamentoDynamoModel.Ativo);
 
             return pagamento;
         }
 
         public async Task<Domain.Aggregates.Pagamento> Cadastrar(Domain.Aggregates.Pagamento pagamento)
         {
-            var pagamentoDynamoModel = new PagamentoDbModel(pagamento.PedidoId, pagamento.Valor, (int)pagamento.StatusPagamento, (int)pagamento.FormaPagamento);
+            var pagamentoDynamoModel = new PagamentoDbModel(
+                pagamento.PedidoId,
+                pagamento.Valor,
+                (int)pagamento.StatusPagamento,
+                (int)pagamento.FormaPagamento,
+                pagamento.Ativo);
+
             await _context.SaveAsync(pagamentoDynamoModel);
 
             return pagamento;
+        }
+
+        public async Task<List<Domain.Aggregates.Pagamento>> BuscarPagamentosPorPedidosId(List<int> pedidosId)
+        {
+            List<Domain.Aggregates.Pagamento> pagamentos = new();
+
+            foreach (var pedidoId in pedidosId)
+            {
+                var pagamento = await BuscarPagamentoPorPedidoId(pedidoId);
+
+                if (pagamento is not null)
+                {
+                    pagamentos.Add(pagamento);
+                }
+            }
+
+            return pagamentos;
         }
     }
 }
