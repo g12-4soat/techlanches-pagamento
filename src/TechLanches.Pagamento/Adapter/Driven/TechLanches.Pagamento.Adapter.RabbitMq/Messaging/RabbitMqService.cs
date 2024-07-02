@@ -27,6 +27,18 @@ namespace TechLanches.Pagamento.Adapter.RabbitMq.Messaging
                                   autoDelete: false,
                                   arguments: null);
 
+            _channel.QueueDeclare(queue: _rabbitOptions.QueueOrderCreated,
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
+
+            _channel.QueueDeclare(queue: _rabbitOptions.QueueOrderStatus,
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
+
             _channel.BasicQos(0, 1, false);
         }
 
