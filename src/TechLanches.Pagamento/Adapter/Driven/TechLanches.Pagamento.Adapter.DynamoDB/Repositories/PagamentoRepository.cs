@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Domain.Enums;
@@ -9,10 +10,11 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
     public class PagamentoRepository : IPagamentoRepository
     {
         private readonly IDynamoDBContext _context;
-
+        private readonly IAmazonDynamoDB _dynamoDbClient;
         public PagamentoRepository(IAmazonDynamoDB dynamoDbClient)
         {
             _context = new DynamoDBContext(dynamoDbClient);
+            _dynamoDbClient = dynamoDbClient;
         }
 
         public PagamentoRepository(IDynamoDBContext context)
@@ -20,7 +22,7 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             _context = context;
         }
 
-        public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
+        public async Task<Domain.Aggregates.Pagamento> AtualizarDados(Domain.Aggregates.Pagamento pagamento)
         {
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
@@ -31,6 +33,62 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
             return pagamento;
         }
+
+        public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
+        {
+            // Carrega o modelo do DynamoDB baseado no Id do pagamento
+            var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
+
+            // Verifica se o modelo foi encontrado
+            if (pagamentoDynamoModel == null)
+            {
+                throw new Exception("Pagamento não encontrado.");
+            }
+
+            // Atualiza o status do pagamento no modelo do DynamoDB
+            pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
+
+            // Configuração da atualização
+            var updatePagamentoRequest = new Update
+            {
+                TableName = "pagamentos",
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    { "Id", new AttributeValue { S = pagamento.Id } }
+                },
+                UpdateExpression = "set StatusPagamento = :statusPagamento",
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":statusPagamento", new AttributeValue { N = ((int)pagamento.StatusPagamento).ToString() } }
+                }
+            };
+
+            // Configuração da transação
+            var transactWriteItemsRequest = new TransactWriteItemsRequest
+            {
+                TransactItems = new List<TransactWriteItem>
+                {
+                    new TransactWriteItem
+                    {
+                        Update = updatePagamentoRequest
+                    }
+                }
+            };
+
+            // Executa a transação usando o cliente DynamoDB
+            var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
+
+            // Verifica a resposta da transação
+            if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return pagamento;
+            }
+            else
+            {
+                throw new Exception("Transação falhou ao atualizar o pagamento.");
+            }
+        }
+
 
         public async Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorId(string pagamentoId)
         {

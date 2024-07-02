@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Adapter\Driven\TechLanches.Pagamento.Adapter.ACL.QrCode\TechLanches.Pagamento.Adapter.ACL.QrCode.csproj" />
+    <ProjectReference Include="..\..\Adapter\Driven\TechLanches.Pagamento.Adapter.RabbitMq\TechLanches.Pagamento.Adapter.RabbitMq.csproj" />
     <ProjectReference Include="..\TechLanches.Pagamento.Domain\TechLanches.Pagamento.Domain.csproj" />
   </ItemGroup>
 

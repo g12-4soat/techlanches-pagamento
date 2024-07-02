@@ -2,6 +2,8 @@ using Polly;
 using Polly.Extensions.Http;
 using TechLanches.Pagamento.Adapter.API.Configuration;
 using TechLanches.Pagamento.Adapter.AWS;
+using TechLanches.Pagamento.Adapter.Consumer;
+using TechLanches.Pagamento.Adapter.RabbitMq.Options;
 using TechLanches.Pagamento.Application.Constantes;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,7 @@ builder.WebHost.ConfigureAppConfiguration(((_, configurationBuilder) =>
 }));
 
 builder.Services.Configure<TechLanchesCognitoSecrets>(builder.Configuration);
+builder.Services.Configure<RabbitOptions>(builder.Configuration.GetSection("RabbitMQ"));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -44,6 +47,8 @@ var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                   .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
 
 //Registrar httpclient
+
+builder.Services.AddHostedService<PagamentoConsumerHostedService>();
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
