@@ -75,25 +75,17 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 }
             };
 
-            try
-            {
-                // Executa a transação usando o cliente DynamoDB
-                var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
+            // Executa a transação usando o cliente DynamoDB
+            var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
 
-                // Verifica a resposta da transação
-                if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    return pagamento;
-                }
-                else
-                {
-                    throw new Exception("Transação falhou ao atualizar o pagamento.");
-                }
-            }
-            catch (Exception ex)
+            // Verifica a resposta da transação
+            if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
-                // Lida com a exceção
-                throw new Exception("Erro ao realizar transação para atualizar o pagamento.", ex);
+                return pagamento;
+            }
+            else
+            {
+                throw new Exception("Transação falhou ao atualizar o pagamento.");
             }
         }
 
