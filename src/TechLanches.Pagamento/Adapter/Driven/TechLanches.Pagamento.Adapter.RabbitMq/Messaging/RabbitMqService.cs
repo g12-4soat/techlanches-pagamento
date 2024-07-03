@@ -44,7 +44,6 @@ namespace TechLanches.Pagamento.Adapter.RabbitMq.Messaging
 
         public void Publicar(IBaseMessage baseMessage, string queueName)
         {
-            throw new Exception();
             var mensagem = Encoding.UTF8.GetBytes(baseMessage.GetMessage());
 
             var properties = _channel.CreateBasicProperties();
