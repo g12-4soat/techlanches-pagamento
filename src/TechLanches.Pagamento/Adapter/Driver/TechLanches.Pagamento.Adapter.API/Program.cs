@@ -61,8 +61,9 @@ app.Use(async (context, next) =>
 });
 if (!app.Environment.IsDevelopment())
 {
-    app.UseHsts();
+    
 }
+app.UseHsts();
 app.UseRouting();
 app.AddCustomMiddlewares();
 app.UseAuthentication();
