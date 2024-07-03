@@ -24,6 +24,13 @@ builder.Services.Configure<TechLanchesCognitoSecrets>(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60);
+});
+
 //Add cognito auth
 builder.Services.AddAuthenticationConfig();
 
