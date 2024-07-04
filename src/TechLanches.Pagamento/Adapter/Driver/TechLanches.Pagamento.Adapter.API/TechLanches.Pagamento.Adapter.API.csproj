@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\..\Core\TechLanches.Pagamento.Domain\TechLanches.Pagamento.Domain.csproj" />
     <ProjectReference Include="..\..\Driven\TechLanches.Pagamento.Adapter.AWS\TechLanches.Pagamento.Adapter.AWS.csproj" />
     <ProjectReference Include="..\..\Driven\TechLanches.Pagamento.Adapter.DynamoDB\TechLanches.Pagamento.Adapter.DynamoDB.csproj" />
+    <ProjectReference Include="..\TechLanches.Pagamento.Adapter.Consumer\TechLanches.Pagamento.Adapter.Consumer.csproj" />
   </ItemGroup>
 
 </Project>
