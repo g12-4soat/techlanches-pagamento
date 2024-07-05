@@ -95,7 +95,7 @@ namespace TechLanches.Pagamento.Application.Controllers
 
                 try
                 {
-                    retorno = await _pagamentoGateway.Atualizar(pagamento);
+                    retorno = await _pagamentoGateway.AtualizarDados(pagamento);
 
                     if (retorno.Ativo)
                     {
@@ -130,14 +130,6 @@ namespace TechLanches.Pagamento.Application.Controllers
             await pagamentoGateway.Atualizar(pagamento);
             var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Aprovado;
             return pagamentoFoiAprovado;
-        }
-    }
-}
-                return pagamentoFoiAprovado;
-            }
-        }
-    }
-}            }
         }
     }
 }

@@ -37,19 +37,15 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
         public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
         {
-            // Carrega o modelo do DynamoDB baseado no Id do pagamento
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
-            // Verifica se o modelo foi encontrado
             if (pagamentoDynamoModel == null)
             {
                 throw new Exception("Pagamento não encontrado.");
             }
 
-            // Atualiza o status do pagamento no modelo do DynamoDB
             pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
 
-            // Configuração da atualização
             var updatePagamentoRequest = new Update
             {
                 TableName = "pagamentos",
@@ -64,7 +60,6 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 }
             };
 
-            // Cria a mensagem Outbox
             var outboxMessage = new OutboxMessageDbModel
             {
                 Id = Guid.NewGuid().ToString(),
@@ -87,19 +82,13 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             var transactWriteItemsRequest = new TransactWriteItemsRequest
             {
                 TransactItems = new List<TransactWriteItem>
-        {
-            new TransactWriteItem { Update = updatePagamentoRequest },
-            new TransactWriteItem { Put = putOutboxRequest }
-        }
+                {
+                    new TransactWriteItem { Update = updatePagamentoRequest },
+                    new TransactWriteItem { Put = putOutboxRequest }
+                }
             };
 
-
-            try
-            {
-                // Executa a transação usando o cliente DynamoDB
-                var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
-
-            // Verifica a resposta da transação
+            var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
             if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
                 return pagamento;
@@ -109,7 +98,6 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 throw new Exception("Transação falhou ao atualizar o pagamento.");
             }
         }
-
 
         public async Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorId(string pagamentoId)
         {
