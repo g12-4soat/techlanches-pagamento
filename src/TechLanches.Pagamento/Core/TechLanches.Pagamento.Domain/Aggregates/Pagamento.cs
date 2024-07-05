@@ -13,21 +13,23 @@ namespace TechLanches.Pagamento.Domain.Aggregates
             Valor = valor;
             StatusPagamento = StatusPagamento.Aguardando;
             FormaPagamento = formaPagamento;
+            Ativar();
             Validar();
         }
 
-        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento):base(id)
+        public Pagamento(string id, int pedidoId, decimal valor, StatusPagamento statusPagamento, bool ativo):base(id)
         {
             PedidoId = pedidoId;
             Valor = valor;
             StatusPagamento = statusPagamento;
-            Validar();
+            Ativo = ativo;
         }
 
         public int PedidoId { get; private set; }
         public decimal Valor { get; private set; }
         public StatusPagamento StatusPagamento { get; private set; }
         public FormaPagamento FormaPagamento { get; private set; }
+        public bool Ativo { get; private set; }
 
         public void Validar()
         {
@@ -36,6 +38,9 @@ namespace TechLanches.Pagamento.Domain.Aggregates
 
             if (Valor <= 0)
                 throw new DomainException("O valor deve ser maior que zero.");
+
+            if (!Ativo)
+                throw new DomainException("O pagamento precisa estar ativo na criação.");
         }
 
         public void Reprovar()
@@ -49,6 +54,16 @@ namespace TechLanches.Pagamento.Domain.Aggregates
         public void Aprovar()
         {
             StatusPagamento = StatusPagamento.Aprovado;
+        }
+
+        public void Ativar()
+        {
+            Ativo = true;
+        }
+
+        public void Inativar()
+        {
+            Ativo = false;
         }
     }
 }

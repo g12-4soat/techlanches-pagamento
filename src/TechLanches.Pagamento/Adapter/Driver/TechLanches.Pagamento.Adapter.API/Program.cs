@@ -28,6 +28,13 @@ builder.Services.Configure<RabbitOptions>(builder.Configuration.GetSection("Rabb
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60);
+});
+
 //Add cognito auth
 builder.Services.AddAuthenticationConfig();
 
@@ -54,16 +61,23 @@ builder.Services.AddHostedService<OutboxConsumerHostedService>();
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
-    //var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE");
-    //httpClient.BaseAddress = new Uri($"http://{url}:5050");
-
-    httpClient.BaseAddress = new Uri($"http://localhost:5298");
+    var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE");
+    httpClient.BaseAddress = new Uri($"http://{url}:5050");
 }).AddPolicyHandler(retryPolicy);
 
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
-
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    await next();
+});
+if (!app.Environment.IsDevelopment())
+{
+    
+}
+app.UseHsts();
 app.UseRouting();
 app.AddCustomMiddlewares();
 app.UseAuthentication();

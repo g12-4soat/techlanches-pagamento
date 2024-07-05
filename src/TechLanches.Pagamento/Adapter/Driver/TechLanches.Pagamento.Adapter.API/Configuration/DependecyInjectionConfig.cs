@@ -4,6 +4,8 @@ using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
 using TechLanches.Pagamento.Adapter.Outbox.Services;
 using TechLanches.Pagamento.Adapter.RabbitMq.Messaging;
 using TechLanches.Pagamento.Application.Controllers;
+using TechLanches.Pagamento.Application.Gateways;
+using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Application.Presenters;
 using TechLanches.Pagamento.Application.Presenters.Interfaces;
@@ -21,6 +23,8 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
 
             services.AddSingleton<IPagamentoController, PagamentoController>();
             services.AddSingleton<IPedidoController, PedidoController>();
+
+            services.AddSingleton<IPedidoGateway, PedidoGateway>();
 
             services.AddSingleton<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
 

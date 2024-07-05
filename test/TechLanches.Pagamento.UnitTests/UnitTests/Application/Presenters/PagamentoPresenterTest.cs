@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TechLanches.Pagamento.Application.DTOs;
+﻿using TechLanches.Pagamento.Application.DTOs;
 using TechLanches.Pagamento.Application.Presenters;
 using TechLanches.Pagamento.Domain.Enums;
 
@@ -16,7 +11,7 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Application.Presenters
         {
             // Arrange
             var presenter = new PagamentoPresenter();
-            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aprovado);
+            var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aprovado, true);
 
             // Act
             var pagamentoDTO = presenter.ParaDto(pagamento);
