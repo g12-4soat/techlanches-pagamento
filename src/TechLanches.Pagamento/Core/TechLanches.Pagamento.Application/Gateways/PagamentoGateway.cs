@@ -24,6 +24,11 @@ namespace TechLanches.Pagamento.Application.Gateways
             return _pagamentoRepository.Atualizar(pagamento);
         }
 
+        public Task<Domain.Aggregates.Pagamento> AtualizarDados(Domain.Aggregates.Pagamento pagamento)
+        {
+            return _pagamentoRepository.AtualizarDados(pagamento);
+        }
+
         public Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorPedidoId(int pedidoId)
         {
             return _pagamentoRepository.BuscarPagamentoPorPedidoId(pedidoId);

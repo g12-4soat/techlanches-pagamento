@@ -95,7 +95,7 @@ namespace TechLanches.Pagamento.Application.Controllers
 
                 try
                 {
-                    retorno = await _pagamentoGateway.Atualizar(pagamento);
+                    retorno = await _pagamentoGateway.AtualizarDados(pagamento);
 
                     if (retorno.Ativo)
                     {
@@ -128,18 +128,7 @@ namespace TechLanches.Pagamento.Application.Controllers
         {
             var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, statusPagamento, pagamentoGateway);
             await pagamentoGateway.Atualizar(pagamento);
-
-            PedidoStatusMessage pedidoStatusMessage;
-
             var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Aprovado;
-
-            if (pagamentoFoiAprovado)
-                pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoRecebido);
-            else
-                pedidoStatusMessage = new PedidoStatusMessage(pagamento.PedidoId, Domain.Enums.Pedido.StatusPedido.PedidoCanceladoPorPagamentoRecusado);
-
-            _rabbitMqService.Publicar(pedidoStatusMessage, _rabbitOptions.QueueOrderStatus);
-
             return pagamentoFoiAprovado;
         }
     }

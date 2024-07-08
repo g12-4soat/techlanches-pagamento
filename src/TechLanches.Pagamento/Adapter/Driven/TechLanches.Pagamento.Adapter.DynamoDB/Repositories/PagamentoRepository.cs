@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
+using TechLanches.Pagamento.Adapter.RabbitMq;
 using TechLanches.Pagamento.Application.Ports.Repositories;
 using TechLanches.Pagamento.Domain.Enums;
 
@@ -36,19 +37,15 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
         public async Task<Domain.Aggregates.Pagamento> Atualizar(Domain.Aggregates.Pagamento pagamento)
         {
-            // Carrega o modelo do DynamoDB baseado no Id do pagamento
             var pagamentoDynamoModel = await _context.LoadAsync<PagamentoDbModel>(pagamento.Id);
 
-            // Verifica se o modelo foi encontrado
             if (pagamentoDynamoModel == null)
             {
                 throw new Exception("Pagamento não encontrado.");
             }
 
-            // Atualiza o status do pagamento no modelo do DynamoDB
             pagamentoDynamoModel.StatusPagamento = (int)pagamento.StatusPagamento;
 
-            // Configuração da atualização
             var updatePagamentoRequest = new Update
             {
                 TableName = "pagamentos",
@@ -63,22 +60,35 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 }
             };
 
-            // Configuração da transação
+            var outboxMessage = new OutboxMessageDbModel
+            {
+                Id = Guid.NewGuid().ToString(),
+                PagamentoId = pagamento.Id,
+                Processado = "0",
+            };
+
+            // Configuração da inserção na tabela Outbox
+            var putOutboxRequest = new Put
+            {
+                TableName = "outboxMessage",
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    { "Id", new AttributeValue { S = outboxMessage.Id } },
+                    { "PagamentoId", new AttributeValue { S = outboxMessage.PagamentoId } },
+                    { "Processado", new AttributeValue { S = outboxMessage.Processado.ToString()} },
+                }
+            };
+
             var transactWriteItemsRequest = new TransactWriteItemsRequest
             {
                 TransactItems = new List<TransactWriteItem>
                 {
-                    new TransactWriteItem
-                    {
-                        Update = updatePagamentoRequest
-                    }
+                    new TransactWriteItem { Update = updatePagamentoRequest },
+                    new TransactWriteItem { Put = putOutboxRequest }
                 }
             };
 
-            // Executa a transação usando o cliente DynamoDB
             var response = await _dynamoDbClient.TransactWriteItemsAsync(transactWriteItemsRequest);
-
-            // Verifica a resposta da transação
             if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
                 return pagamento;
@@ -88,7 +98,6 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
                 throw new Exception("Transação falhou ao atualizar o pagamento.");
             }
         }
-
 
         public async Task<Domain.Aggregates.Pagamento> BuscarPagamentoPorId(string pagamentoId)
         {

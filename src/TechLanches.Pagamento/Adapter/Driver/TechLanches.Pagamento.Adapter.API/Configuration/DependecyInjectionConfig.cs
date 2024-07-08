@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
 using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
+using TechLanches.Pagamento.Adapter.Outbox.Services;
 using TechLanches.Pagamento.Adapter.RabbitMq.Messaging;
 using TechLanches.Pagamento.Application.Controllers;
 using TechLanches.Pagamento.Application.Gateways;
@@ -28,8 +29,10 @@ namespace TechLanches.Pagamento.Adapter.API.Configuration
             services.AddSingleton<IMercadoPagoMockadoService, MercadoPagoMockadoService>();
 
             services.AddSingleton<IPagamentoRepository, PagamentoRepository>();
+            services.AddSingleton<IOutboxRepository, OutboxRepository>();
 
             services.AddSingleton<IRabbitMqService, RabbitMqService>();
+            services.AddSingleton<IOutboxService, OutboxService>();
 
             services.AddSingleton<IAmazonDynamoDB>(sp =>
             {

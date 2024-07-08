@@ -3,6 +3,7 @@ using Polly.Extensions.Http;
 using TechLanches.Pagamento.Adapter.API.Configuration;
 using TechLanches.Pagamento.Adapter.AWS;
 using TechLanches.Pagamento.Adapter.Consumer;
+using TechLanches.Pagamento.Adapter.Outbox;
 using TechLanches.Pagamento.Adapter.RabbitMq.Options;
 using TechLanches.Pagamento.Application.Constantes;
 
@@ -56,6 +57,7 @@ var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
 //Registrar httpclient
 
 builder.Services.AddHostedService<PagamentoConsumerHostedService>();
+builder.Services.AddHostedService<OutboxConsumerHostedService>();
 
 builder.Services.AddHttpClient(Constantes.API_PEDIDO, httpClient =>
 {
