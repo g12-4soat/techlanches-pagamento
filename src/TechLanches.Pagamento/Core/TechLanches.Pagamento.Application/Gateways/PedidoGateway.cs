@@ -6,6 +6,7 @@ using TechLanches.Pagamento.Application.Gateways.Interfaces;
 using TechLanches.Pagamento.Domain.Enums.Pedido;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 
 namespace TechLanches.Pagamento.Application.Gateways
 {
@@ -46,19 +47,24 @@ namespace TechLanches.Pagamento.Application.Gateways
             
             LogResponse(response);
 
-            string resultStr = await response.Content.ReadAsStringAsync();
+            var pedidos = new List<PedidoResponseDTO>();
 
-            var pedidos = JsonSerializer.Deserialize<List<PedidoResponseDTO>>(resultStr);
+            if (response.IsSuccessStatusCode)
+            {
+                string resultStr = await response.Content.ReadAsStringAsync();
 
-            return pedidos ?? new();
+                pedidos = JsonSerializer.Deserialize<List<PedidoResponseDTO>>(resultStr);
+            }
+
+            return pedidos;
         }
 
         private void LogResponse(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Erro durante chamada api de pedidos. Status Code:{StatusCode}. Response: {response}.", response.StatusCode, response.Content.ReadAsStringAsync());
-                throw new Exception("Erro durante chamada api de pedidos.");
+                _logger.LogWarning("Erro durante chamada api de pedidos. Status Code:{StatusCode}. Response: {response}.", response.StatusCode, response.Content?.ReadAsStringAsync());
+                return;
             }
 
             _logger.LogInformation($"Sucesso na chamada da api de pedidos.");

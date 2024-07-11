@@ -92,8 +92,13 @@ namespace TechLanches.Pagamento.Adapter.API.Endpoints
                 : Results.BadRequest(new ErrorResponseDTO { MensagemErro = $"Pagamento recusado.", StatusCode = HttpStatusCode.BadRequest });
         }
 
-        private static async Task<IResult> InativarPagamento([FromRoute] string cpf, [FromServices] IPagamentoController pagamentoController)
+        private static async Task<IResult> InativarPagamento([FromRoute] string cpf, 
+            [FromServices] IPagamentoController pagamentoController, 
+            [FromServices] IMemoryCache memoryCache,
+            [FromHeader(Name = "Authorization")] string cognitoAcessToken)
         {
+            memoryCache.Set("authtoken", cognitoAcessToken, TimeSpan.FromMinutes(5));
+
             var resultado = await pagamentoController.InativarPagamentos(cpf);
 
             if (resultado)
