@@ -40,6 +40,15 @@ builder.Services.AddAuthenticationConfig();
 
 //Setting Swagger
 builder.Services.AddSwaggerConfiguration();
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHsts(options =>
+    {
+        options.Preload = true;
+        options.IncludeSubDomains = true;
+        options.MaxAge = TimeSpan.FromDays(60);
+    });
+}
 
 //DI Abstraction
 builder.Services.AddDependencyInjectionConfiguration();
@@ -75,9 +84,8 @@ app.Use(async (context, next) =>
 });
 if (!app.Environment.IsDevelopment())
 {
-    
+    app.UseHsts();
 }
-app.UseHsts();
 app.UseRouting();
 app.AddCustomMiddlewares();
 app.UseAuthentication();
