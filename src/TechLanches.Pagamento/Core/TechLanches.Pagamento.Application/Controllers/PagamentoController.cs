@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Drawing;
+using System.Text.Json;
 using System.Transactions;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.DTOs;
 using TechLanches.Pagamento.Adapter.ACL.QrCode.Provedores.MercadoPago;
@@ -84,18 +85,30 @@ namespace TechLanches.Pagamento.Application.Controllers
                 return sucesso;
             }
 
+            _logger.LogInformation("Existem pagamentos a serem inativados");
+
             var pedidosId = pedidos.Select(x => x.Id).ToList();
+
+            _logger.LogInformation("pedidos id {pedidosId}", JsonSerializer.Serialize(pedidosId));
+
             var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
+
+            _logger.LogInformation("pagamentos a serem inativados {pagamentos}", JsonSerializer.Serialize(pagamentos));
 
             foreach (var pagamento in pagamentos)
             {
                 Domain.Aggregates.Pagamento retorno;
 
+                _logger.LogInformation("inativando pagamento {id}", pagamento.Id);
+
                 pagamento.Inativar();
+
 
                 try
                 {
-                    retorno = await _pagamentoGateway.AtualizarDados(pagamento);
+                    retorno = await _pagamentoRepository.AtualizarDados(pagamento);
+                    
+                    _logger.LogInformation("pagamento model {id} inativado ativo {Ativo}", retorno.Id, retorno.Ativo);
 
                     if (retorno.Ativo)
                     {
