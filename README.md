@@ -56,6 +56,13 @@ Para importar as collections do postman, basta acessar os links a seguir:
 - .NET - 8.0
 </details>
 
+<details>
+  <summary>Justificativa padrão saga</summary>
+
+## Padrão saga coregrafada
+- A justificativa para o padrão saga utilizado pode ser encontrado junto às docs do sistema no seguinte repositório: https://github.com/g12-4soat/techlanches-docs/tree/main
+</details>
+
 ---
 
 ## Métricas Sonar
