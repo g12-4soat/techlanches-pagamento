@@ -136,6 +136,8 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
             PagamentoDbModel pagamentoDynamoModel = pagamentos?.FirstOrDefault(x => x.Ativo);
 
+            _logger.LogInformation("pagamentos encontrados {pagamentos}", JsonSerializer.Serialize(pagamentoDynamoModel));
+
             if (pagamentoDynamoModel is null)
                 return null;
 
