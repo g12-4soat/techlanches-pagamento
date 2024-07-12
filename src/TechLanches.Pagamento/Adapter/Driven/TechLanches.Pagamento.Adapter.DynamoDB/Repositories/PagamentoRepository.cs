@@ -24,9 +24,10 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             _logger = logger;
         }
 
-        public PagamentoRepository(IDynamoDBContext context)
+        public PagamentoRepository(IDynamoDBContext context, ILogger<PagamentoRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Domain.Aggregates.Pagamento> AtualizarDados(Domain.Aggregates.Pagamento pagamento)
