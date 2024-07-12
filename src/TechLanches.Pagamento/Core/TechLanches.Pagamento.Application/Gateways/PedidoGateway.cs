@@ -54,14 +54,8 @@ namespace TechLanches.Pagamento.Application.Gateways
             {
                 string resultStr = await response.Content.ReadAsStringAsync();
 
-                _logger.LogInformation("pedidos retornados {resultStr}", resultStr);
-
                 pedidos = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PedidoResponseDTO>>(resultStr);
-
-                _logger.LogInformation("pedidos serializados {resultStr}", System.Text.Json.JsonSerializer.Serialize(pedidos));
             }
-
-            _logger.LogInformation("pedidos retornados da api {resultStr}", pedidos);
 
             return pedidos;
         }
