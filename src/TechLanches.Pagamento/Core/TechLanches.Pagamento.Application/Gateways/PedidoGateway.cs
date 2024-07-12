@@ -7,6 +7,7 @@ using TechLanches.Pagamento.Domain.Enums.Pedido;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace TechLanches.Pagamento.Application.Gateways
 {
@@ -34,7 +35,7 @@ namespace TechLanches.Pagamento.Application.Gateways
 
             string resultStr = await response.Content.ReadAsStringAsync();
 
-            var pedido = JsonSerializer.Deserialize<PedidoResponseDTO>(resultStr);
+            var pedido = System.Text.Json.JsonSerializer.Deserialize<PedidoResponseDTO>(resultStr);
 
             return pedido;
         }
@@ -43,7 +44,7 @@ namespace TechLanches.Pagamento.Application.Gateways
         {
             SetAuthToken();
 
-            var response = await _httpClient.GetAsync($"api/pedidos/{cpf}");
+            var response = await _httpClient.GetAsync($"api/pedidos/cliente/{cpf}");
             
             LogResponse(response);
 
@@ -53,7 +54,7 @@ namespace TechLanches.Pagamento.Application.Gateways
             {
                 string resultStr = await response.Content.ReadAsStringAsync();
 
-                pedidos = JsonSerializer.Deserialize<List<PedidoResponseDTO>>(resultStr);
+                pedidos = Newtonsoft.Json.JsonConvert.DeserializeObject<List<PedidoResponseDTO>>(resultStr);
             }
 
             return pedidos;

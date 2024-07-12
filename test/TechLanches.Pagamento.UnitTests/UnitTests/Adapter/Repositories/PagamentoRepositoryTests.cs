@@ -1,5 +1,6 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
 using TechLanches.Pagamento.Adapter.DynamoDB.Repositories;
@@ -19,8 +20,9 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
             var pagamentoId = "1";
             var pagamentoDynamoModel = new PagamentoDbModel { Id = pagamentoId, PedidoId = 1, Valor = 100.0m, StatusPagamento = 1, FormaPagamento = 1 };
             var context = Substitute.For<IDynamoDBContext>();
+            var logger = Substitute.For<ILogger<PagamentoRepository>>();
             context.LoadAsync<PagamentoDbModel>(pagamentoId).Returns(pagamentoDynamoModel);
-            var repository = new PagamentoRepository(context);
+            var repository = new PagamentoRepository(context, logger);
 
             // Act
             var resultado = await repository.BuscarPagamentoPorId(pagamentoId);
@@ -41,8 +43,9 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
 
             var context = Substitute.For<IDynamoDBContext>();
             context.LoadAsync<PagamentoDbModel>(pagamentoId).Returns(nullModel);
+            var logger = Substitute.For<ILogger<PagamentoRepository>>();
 
-            var repository = new PagamentoRepository(context);
+            var repository = new PagamentoRepository(context, logger);
 
             // Act
             var pagamento = await repository.BuscarPagamentoPorId(pagamentoId);
@@ -58,8 +61,9 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
             var pagamento = new Pagamento.Domain.Aggregates.Pagamento("1", 1, 100.0m, StatusPagamento.Aguardando, true);
 
             var context = Substitute.For<IDynamoDBContext>();
+            var logger = Substitute.For<ILogger<PagamentoRepository>>();
 
-            var repository = new PagamentoRepository(context);
+            var repository = new PagamentoRepository(context, logger);
 
             // Act
             var novoPagamento = await repository.Cadastrar(pagamento);
@@ -89,8 +93,9 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
 
             var context = Substitute.For<IDynamoDBContext>();
             context.QueryAsync<PagamentoDbModel>(pedidoId, Arg.Any<DynamoDBOperationConfig>()).Returns(query);
+            var logger = Substitute.For<ILogger<PagamentoRepository>>();
 
-            var repository = new PagamentoRepository(context);
+            var repository = new PagamentoRepository(context, logger);
 
             // Act
             var pagamento = await repository.BuscarPagamentoPorPedidoId(pedidoId);
@@ -116,8 +121,9 @@ namespace TechLanches.Pagamento.UnitTests.UnitTests.Adapter.Repositories
 
             var context = Substitute.For<IDynamoDBContext>();
             context.QueryAsync<PagamentoDbModel>(pedidoId, Arg.Any<DynamoDBOperationConfig>()).Returns(query);
+            var logger = Substitute.For<ILogger<PagamentoRepository>>();
 
-            var repository = new PagamentoRepository(context);
+            var repository = new PagamentoRepository(context, logger);
 
             // Act
             var pagamento = await repository.BuscarPagamentoPorPedidoId(pedidoId);
