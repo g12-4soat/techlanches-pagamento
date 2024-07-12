@@ -43,7 +43,7 @@ namespace TechLanches.Pagamento.Application.Gateways
         {
             SetAuthToken();
 
-            var response = await _httpClient.GetAsync($"api/pedidos/{cpf}");
+            var response = await _httpClient.GetAsync($"api/pedidos/cliente/{cpf}");
             
             LogResponse(response);
 
