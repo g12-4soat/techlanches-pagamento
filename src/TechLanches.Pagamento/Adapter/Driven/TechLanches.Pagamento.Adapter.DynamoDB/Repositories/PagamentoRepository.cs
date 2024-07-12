@@ -169,7 +169,7 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
 
             foreach (var pedidoId in pedidosId)
             {
-                _logger.LogInformation("buscando pagamento para pedido ", pedidoId);
+                _logger.LogInformation("buscando pagamento para pedido {pedidoId}", pedidoId);
 
                 var pagamento = await BuscarPagamentoPorPedidoId(pedidoId);
 

@@ -85,11 +85,16 @@ namespace TechLanches.Pagamento.Application.Controllers
                 return sucesso;
             }
 
-            _logger.LogInformation("Existem pagamentos a serem inativados");
+            _logger.LogInformation("Existem pedidos com pagamentos a serem inativados");
 
             var pedidosId = pedidos.Select(x => x.Id).ToList();
 
-            _logger.LogInformation("pedidos id {pedidosId}", JsonSerializer.Serialize(pedidosId.Select(x => x)));
+            _logger.LogInformation("pedidos count {pedidosId}", pedidosId.Count);
+
+            foreach (var item in pedidosId)
+            {
+                _logger.LogInformation("pedidos id {pedidosId}", item);
+            }
 
             var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
 
