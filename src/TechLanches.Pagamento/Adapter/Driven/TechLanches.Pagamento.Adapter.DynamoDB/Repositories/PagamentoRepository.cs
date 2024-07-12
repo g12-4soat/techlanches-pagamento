@@ -1,6 +1,9 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime.Internal.Util;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using TechLanches.Pagamento.Adapter.DynamoDB.Models;
 using TechLanches.Pagamento.Adapter.RabbitMq;
 using TechLanches.Pagamento.Application.Ports.Repositories;
@@ -12,10 +15,13 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
     {
         private readonly IDynamoDBContext _context;
         private readonly IAmazonDynamoDB _dynamoDbClient;
-        public PagamentoRepository(IAmazonDynamoDB dynamoDbClient)
+        private readonly ILogger<PagamentoRepository> _logger;
+
+        public PagamentoRepository(IAmazonDynamoDB dynamoDbClient, ILogger<PagamentoRepository> logger)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _dynamoDbClient = dynamoDbClient;
+            _logger = logger;
         }
 
         public PagamentoRepository(IDynamoDBContext context)
@@ -122,7 +128,12 @@ namespace TechLanches.Pagamento.Adapter.DynamoDB.Repositories
             {
                 IndexName = "pedidoIdIndex"
             });
-            PagamentoDbModel pagamentoDynamoModel = (await query.GetNextSetAsync()).Where(x => x.Ativo).FirstOrDefault();
+
+            var pagamentos = await query.GetNextSetAsync();
+
+            _logger.LogInformation("pagamentos encontrados ", JsonSerializer.Serialize(pagamentos));
+
+            PagamentoDbModel pagamentoDynamoModel = pagamentos?.FirstOrDefault(x => x.Ativo);
 
             if (pagamentoDynamoModel is null)
                 return null;
