@@ -89,7 +89,7 @@ namespace TechLanches.Pagamento.Application.Controllers
 
             var pedidosId = pedidos.Select(x => x.Id).ToList();
 
-            _logger.LogInformation("pedidos id {pedidosId}", JsonSerializer.Serialize(pedidosId));
+            _logger.LogInformation("pedidos id {pedidosId}", JsonSerializer.Serialize(pedidosId.Select(x => x)));
 
             var pagamentos = await _pagamentoRepository.BuscarPagamentosPorPedidosId(pedidosId);
 
