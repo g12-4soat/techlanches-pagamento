@@ -70,7 +70,7 @@ namespace TechLanches.Pagamento.Application.Gateways
             _logger.LogInformation($"Sucesso na chamada da api de pedidos.");
         }
 
-                private void SetAuthToken()
+        private void SetAuthToken()
         {
             var token = _cache.Get("authtoken").ToString().Split(" ")[1];
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
