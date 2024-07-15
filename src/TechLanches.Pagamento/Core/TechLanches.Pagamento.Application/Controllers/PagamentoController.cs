@@ -132,7 +132,6 @@ namespace TechLanches.Pagamento.Application.Controllers
         {
             var pagamento = await PagamentoUseCase.RealizarPagamento(pedidoId, StatusPagamentoEnum.Reprovado, pagamentoGateway);
             await pagamentoGateway.Atualizar(pagamento);
-            //var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Aprovado;
             var pagamentoFoiAprovado = pagamento.StatusPagamento == StatusPagamento.Reprovado;
             return pagamentoFoiAprovado;
         }
